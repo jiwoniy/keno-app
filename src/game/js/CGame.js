@@ -8,28 +8,24 @@ import {
 // import CMain from './CMain.js'
 import CSpriteLibrary from './sprite_lib'
 import {
-    s_oMain,
+    mainInstance,
+    // s_oMain,
     s_oStage,
 } from './CMain.js'
 
-import {
-    BANK,
-    BET,
-    CANVAS_WIDTH,
-    CANVAS_HEIGHT,
-    ON_MOUSE_UP,
-    START_PLAYER_MONEY,
-    PAYOUTS,
-    WIN_OCCURRENCE,
-    ANIMATION_SPEED
-} from './settings.js'
+import settings from './settings.js'
 import CInterface from './CInterface.js'
 import CPayouts from './CPayouts.js'
 import CAnimBalls from './CAnimBalls.js'
 import CEndPanel from './CEndPanel.js'
 import CNumToggle from './CNumToggle.js'
 
-function CGame(oData){
+function CGame(oData) {
+    this.state = {
+        win_occurrence: oData.win_occurrence || [],
+        payOuts: settings.getPayOuts() || []
+    }
+
     var _bTouchActive;
     var _bInitGame;
     var _bWin;
@@ -55,14 +51,14 @@ function CGame(oData){
     var _oAnimBalls;
     var _oBlockScreen;
     
-    this._init = function(){
+    this.initCGame = function() {
         
         _bTouchActive=false;
         _bInitGame=true;
         
-        _iBank = BANK;
-        _iCurPlayerMoney = START_PLAYER_MONEY;
-        _iCurBet = BET[3];
+        _iBank = settings.BANK;
+        _iCurPlayerMoney = settings.START_PLAYER_MONEY;
+        _iCurBet = settings.BET[3];
         _iTotalNum = 0;
         _iCountPlays = 1;
         _iAdCounter = 0;
@@ -71,13 +67,12 @@ function CGame(oData){
         
         var oBg = createBitmap(CSpriteLibrary.getSprite('bg_game'));
         s_oStage.addChild(oBg); 
-
-        _oInterface = new CInterface();
+        _oInterface = new CInterface(true);
         _oInterface.refreshBet(_iCurBet);           
  
         _oCellContainer = new createjs.Container();
-        _oCellContainer.x = CANVAS_WIDTH/2;
-        _oCellContainer.y = CANVAS_HEIGHT/2;
+        _oCellContainer.x = settings.CANVAS_WIDTH/2;
+        _oCellContainer.y = settings.CANVAS_HEIGHT/2;
         s_oStage.addChild(_oCellContainer);
 
         this._initCells();        
@@ -100,7 +95,7 @@ function CGame(oData){
         oTube.y = 205;
         s_oStage.addChild(oTube);
         
-        var graphics = new createjs.Graphics().beginFill("rgba(158,158,158,0.01)").drawRect(0, 200, CANVAS_WIDTH, CANVAS_HEIGHT-200);
+        var graphics = new createjs.Graphics().beginFill("rgba(158,158,158,0.01)").drawRect(0, 200, settings.CANVAS_WIDTH, settings.CANVAS_HEIGHT-200);
         _oBlockScreen = new createjs.Shape(graphics);
         _oBlockScreen.on("click", function(){});
         _oBlockScreen.visible = false;
@@ -131,7 +126,7 @@ function CGame(oData){
         var iNewHeight = 0;
         for(var i=0; i<80; i++){
             _aCell[i] = new CNumToggle(oStartPos.x +(i%iNumCol)*iCellWidth, oStartPos.y + iCellHeight*iNewHeight, i+1, _oCellContainer);
-            _aCell[i].addEventListenerWithParams(ON_MOUSE_UP, this._onButNumRelease, this, i);
+            _aCell[i].addEventListenerWithParams(settings.ON_MOUSE_UP, this._onButNumRelease, this, i);
             if(i%iNumCol === iNumCol-1){
                 iNewHeight++;
             }            
@@ -142,8 +137,8 @@ function CGame(oData){
         var oNumber = createBitmap(oSprite);
         oNumber.regX = oSprite.width/2;
         oNumber.regY = oSprite.height/2;
-        oNumber.x = CANVAS_WIDTH/2 -35;
-        oNumber.y = CANVAS_HEIGHT/2 + 10;
+        oNumber.x = settings.CANVAS_WIDTH/2 -35;
+        oNumber.y = settings.CANVAS_HEIGHT/2 + 10;
         s_oStage.addChild(oNumber);
 
     };
@@ -241,14 +236,14 @@ function CGame(oData){
         this._clearAllExtracted();
         
         var iIndex;
-        for(var i=0; i<BET.length; i++){
-            if(BET[i] === _iCurBet){
+        for(var i=0; i<settings.BET.length; i++){
+            if(settings.BET[i] === _iCurBet){
                 iIndex = i;
             }
         }
         
         if(szType === "add"){
-            if(iIndex !== BET.length-1 && BET[iIndex +1] <= _iCurPlayerMoney){
+            if(iIndex !== settings.BET.length-1 && settings.BET[iIndex +1] <= _iCurPlayerMoney){
                 iIndex++;
             }
         } else {
@@ -257,7 +252,7 @@ function CGame(oData){
             }
         }
         
-        _iCurBet = BET[iIndex];
+        _iCurBet = settings.BET[iIndex];
         _oInterface.refreshBet(_iCurBet);
         this._checkActiveButton();
         
@@ -272,7 +267,7 @@ function CGame(oData){
         _iAdCounter++;
         if(_iAdCounter === AD_SHOW_COUNTER){
             _iAdCounter = 0;
-            $(s_oMain).trigger("show_interlevel_ad");
+            $(mainInstance()).trigger("show_interlevel_ad");
         }
     };
    
@@ -291,8 +286,8 @@ function CGame(oData){
         _oInterface.refreshMoney(_iCurPlayerMoney);
         
         var iWinIndex = null;
-        for(var i=0; i<PAYOUTS[_iTotalNum-1].pays.length; i++){
-            var iTotalWin = PAYOUTS[_iTotalNum-1].pays[i] * _iCurBet;
+        for(let i = 0; i < settings.getPayOuts()[_iTotalNum-1].pays.length; i += 1){
+            var iTotalWin = settings.getPayOuts()[_iTotalNum-1].pays[i] * _iCurBet;
             if(iTotalWin <= _iBank){
                 iWinIndex = i;
                 break;
@@ -305,12 +300,12 @@ function CGame(oData){
             this._checkWin(iWinIndex);
         }   
         
-        $(s_oMain).trigger("bet_placed",{tot_bet:_iCurBet,money:_iCurPlayerMoney,num_selected:_iTotalNum});
+        $(mainInstance()).trigger("bet_placed",{tot_bet:_iCurBet,money:_iCurPlayerMoney,num_selected:_iTotalNum});
     };
    
     this._checkWin = function(iMaxWinIndex){
         var iRandWin = Math.random()*100;
-        if(iRandWin < WIN_OCCURRENCE[_iTotalNum-1]){
+        if(iRandWin < this.state.win_occurrence[_iTotalNum-1]){
             
             this._extractWinCombination(iMaxWinIndex);
             
@@ -324,9 +319,9 @@ function CGame(oData){
         _bWin = true;
         
         var aWinOccurrenceList = [];
-        for(var i=PAYOUTS[_iTotalNum-1].pays.length-1; i>=iMaxWinIndex; i--){
-            for(var j=0; j<PAYOUTS[_iTotalNum-1].occurrence[i]; j++){
-                aWinOccurrenceList.push(PAYOUTS[_iTotalNum-1].hits[i]);
+        for(let i = settings.getPayOuts()[_iTotalNum-1].pays.length-1; i >= iMaxWinIndex; i -= 1){
+            for(let j = 0; j < settings.getPayOuts()[_iTotalNum-1].occurrence[i]; j += 1){
+                aWinOccurrenceList.push(settings.getPayOuts()[_iTotalNum-1].hits[i]);
             }
         }
         
@@ -372,7 +367,7 @@ function CGame(oData){
         
         _bWin = false;
         
-        var iMaxFakeWinNumber = (PAYOUTS[_iTotalNum-1].hits[PAYOUTS[_iTotalNum-1].hits.length-1]) -1;
+        var iMaxFakeWinNumber = (settings.getPayOuts()[_iTotalNum-1].hits[settings.getPayOuts()[_iTotalNum-1].hits.length-1]) -1;
         
         var iWinNumberToExtract = Math.round(Math.random()*iMaxFakeWinNumber);
         //Copy win numbers
@@ -408,8 +403,8 @@ function CGame(oData){
     
     this._animExtraction = function(){        
         //Calculate ball final position
-        var aBallPos = [];
-        for(var i=0; i<20; i++){
+        const aBallPos = [];
+        for(let i = 0; i < 20; i += 1){
             aBallPos.push(_aCell[ (_aCombination[i] -1) ].getGlobalPosition())
         }
 
@@ -418,9 +413,9 @@ function CGame(oData){
    
     this._checkContinueGame = function(){        
         //Update Money
-        for(var i=0; i<PAYOUTS[_iTotalNum-1].hits.length; i++){
-            if(PAYOUTS[_iTotalNum-1].hits[i] === _iHitsNumber){
-                var iTotalWin = (_iCurBet*PAYOUTS[_iTotalNum-1].pays[i]);
+        for(let i = 0; i < settings.getPayOuts()[_iTotalNum-1].hits.length; i += 1){
+            if(settings.getPayOuts()[_iTotalNum-1].hits[i] === _iHitsNumber){
+                var iTotalWin = (_iCurBet*settings.getPayOuts()[_iTotalNum-1].pays[i]);
                 iTotalWin = parseFloat(iTotalWin.toFixed(1));
                 _iCurPlayerMoney += iTotalWin;
                 _iBank -= iTotalWin;
@@ -445,17 +440,17 @@ function CGame(oData){
         
         //////CHECK IF CAN CONTINUE GAME////
         
-        $(s_oMain).trigger("save_score",_iCurPlayerMoney);
+        $(mainInstance()).trigger("save_score",_iCurPlayerMoney);
         if(_iCurBet>_iCurPlayerMoney){
             
             var iNewIndex = null;
-            for(let i=0; i<BET.length; i++){
-                if(BET[i]<=_iCurPlayerMoney){
+            for(let i=0; i<settings.BET.length; i++){
+                if(settings.BET[i]<=_iCurPlayerMoney){
                     iNewIndex = i;                    
                 }
             }
             if(iNewIndex !== null){
-                _iCurBet = BET[iNewIndex];
+                _iCurBet = settings.BET[iNewIndex];
                 _oInterface.refreshBet(_iCurBet);
             } else {
                 //END GAME
@@ -541,10 +536,9 @@ function CGame(oData){
 
     };
  
-    this.onExit = function(){
-        
+    this.onExit = function() {
         this.unload();
-        s_oMain.gotoMenu();
+        mainInstance().gotoMenu();
     };
     
     // this._onExitHelp = function () {
@@ -570,25 +564,44 @@ function CGame(oData){
     this.update = function(){
         
     };
-
-    s_oGame=this;
     
-    WIN_OCCURRENCE = oData.win_occurrence;
-    PAYOUTS = oData.payouts;
-    BANK = oData.bank_money;
-    START_PLAYER_MONEY = oData.start_player_money;
-    ANIMATION_SPEED = oData.animation_speed;
+    // WIN_OCCURRENCE = oData.win_occurrence;
+    settings.setPayOuts(oData.payouts)
+    settings.BANK = oData.bank_money;
+    settings.START_PLAYER_MONEY = oData.start_player_money;
+    settings.ANIMATION_SPEED = oData.animation_speed;
     
     AD_SHOW_COUNTER = oData.ad_show_counter;
     
     _oParent=this;
-    this._init();
+    this.initCGame();
 }
 
-var s_oGame;
+
 var AD_SHOW_COUNTER
+
+const Singleton = (() => {
+    let instance;
+    function createInstance(data) {
+        return new CGame(data);
+    }
+  
+    return {
+      getInstance: (isConstructor = false, data) => {
+        if (isConstructor) {
+            instance = createInstance(data);
+        } else if (!isConstructor && !instance) {
+            instance = createInstance(data);
+        }
+        return instance;
+      },
+    };
+})();
+const gameInstance = () => Singleton.getInstance(false)
+
+// Need Instance & constructor
+export default Singleton.getInstance;
 export {
-    s_oGame
+    gameInstance
 }
-export default CGame;
 

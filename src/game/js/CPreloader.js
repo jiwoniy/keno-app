@@ -11,13 +11,14 @@ import {
     // s_oSpriteLibrary
 } from './CMain.js'
 
-import {
-    CANVAS_WIDTH,
-    CANVAS_HEIGHT,
-    PRIMARY_FONT,
-    PRIMARY_FONT_COLOUR,
-    ON_MOUSE_UP,
-} from './settings.js'
+import settings from './settings.js'
+// import {
+//     CANVAS_WIDTH,
+//     CANVAS_HEIGHT,
+//     PRIMARY_FONT,
+//     PRIMARY_FONT_COLOUR,
+//     ON_MOUSE_UP,
+// } from './settings.js'
 
 import {
     TEXT_PRELOADER_CONTINUE,
@@ -62,15 +63,15 @@ function CPreloader ({ mainInstance }) {
 
     this.attachSprites = function () {
         var oBg = new createjs.Shape();
-        oBg.graphics.beginFill("black").drawRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        oBg.graphics.beginFill("black").drawRect(0, 0, settings.CANVAS_WIDTH, settings.CANVAS_HEIGHT);
         _oContainer.addChild(oBg);
 
         var oSprite = CSpriteLibrary.getSprite('200x200');
         _oIcon = createBitmap(oSprite);
         _oIcon.regX = oSprite.width * 0.5;
         _oIcon.regY = oSprite.height * 0.5;
-        _oIcon.x = CANVAS_WIDTH/2;
-        _oIcon.y = CANVAS_HEIGHT/2 - 180;
+        _oIcon.x = settings.CANVAS_WIDTH/2;
+        _oIcon.y = settings.CANVAS_HEIGHT/2 - 180;
         _oContainer.addChild(_oIcon);
 
         _oIconMask = new createjs.Shape();
@@ -81,8 +82,8 @@ function CPreloader ({ mainInstance }) {
 
         var oSprite = CSpriteLibrary.getSprite('progress_bar');
         _oProgressBar = createBitmap(oSprite);
-        _oProgressBar.x = CANVAS_WIDTH/2 - (oSprite.width / 2);
-        _oProgressBar.y = CANVAS_HEIGHT/2 + 50;
+        _oProgressBar.x = settings.CANVAS_WIDTH/2 - (oSprite.width / 2);
+        _oProgressBar.y = settings.CANVAS_HEIGHT/2 + 50;
         _oContainer.addChild(_oProgressBar);
 
         _iMaskWidth = oSprite.width;
@@ -94,21 +95,20 @@ function CPreloader ({ mainInstance }) {
 
         _oProgressBar.mask = _oMaskPreloader;
 
-        _oLoadingText = new createjs.Text("", "30px " + PRIMARY_FONT, PRIMARY_FONT_COLOUR);
-        _oLoadingText.x = CANVAS_WIDTH/2;
-        _oLoadingText.y = CANVAS_HEIGHT/2 + 100;
+        _oLoadingText = new createjs.Text("", "30px " + settings.PRIMARY_FONT, settings.PRIMARY_FONT_COLOUR);
+        _oLoadingText.x = settings.CANVAS_WIDTH/2;
+        _oLoadingText.y = settings.CANVAS_HEIGHT/2 + 100;
         _oLoadingText.textBaseline = "alphabetic";
         _oLoadingText.textAlign = "center";
         _oContainer.addChild(_oLoadingText);
         
         var oSprite = CSpriteLibrary.getSprite('but_start');
-        console.log(TEXT_PRELOADER_CONTINUE)
-        _oButStart = new CTextButton(CANVAS_WIDTH/2, CANVAS_HEIGHT/2, oSprite, TEXT_PRELOADER_CONTINUE, "Arial", "#000", "bold "+ 50, _oContainer);        
-        _oButStart.addEventListener(ON_MOUSE_UP, this._onButStartRelease, this);
+        _oButStart = new CTextButton(settings.CANVAS_WIDTH/2, settings.CANVAS_HEIGHT/2, oSprite, TEXT_PRELOADER_CONTINUE, "Arial", "#000", "bold "+ 50, _oContainer);        
+        _oButStart.addEventListener(settings.ON_MOUSE_UP, this._onButStartRelease, this);
         _oButStart.setVisible(false);
         
         _oFade = new createjs.Shape();
-        _oFade.graphics.beginFill("black").drawRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        _oFade.graphics.beginFill("black").drawRect(0, 0, settings.CANVAS_WIDTH, settings.CANVAS_HEIGHT);
         _oContainer.addChild(_oFade);
         
         createjs.Tween.get(_oFade).to({alpha: 0}, 500).call(function () {            

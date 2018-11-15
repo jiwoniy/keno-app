@@ -30,7 +30,7 @@ class Keno extends Component {
   }
 
   componentDidMount () {
-    const oMain = CMain({  
+    const oMain = CMain(true, {  
       bank_money : 100,
       start_player_money: 100,
       win_occurrence : [ 
@@ -47,16 +47,16 @@ class Keno extends Component {
       ],
       //PAYOUT VALUES TABLE: {#HITS, BET MULTIPLY, HITS OCCURRENCE}
       payouts : [
-        {hits: ['-'],           pays: ['-'],                            occurrence: [0]},                   //PAYOUTS FOR 1 NUMBERS
-        {hits: [2,1],           pays: [9,1],                            occurrence: [20,80]},               //PAYOUTS FOR 2 NUMBERS
-        {hits: [3,2],           pays: [47,2],                           occurrence: [20,80]},               //PAYOUTS FOR 3 NUMBERS
-        {hits: [4,3,2],         pays: [91,5,2],                         occurrence: [10,30,60]},            //PAYOUTS FOR 4 NUMBERS
-        {hits: [5,4,3],         pays: [820,12,3],                       occurrence: [10,30,60]},            //PAYOUTS FOR 5 NUMBERS
-        {hits: [6,5,4,3],       pays: [1600,70,4,3],                    occurrence: [10,20,30,40]},         //PAYOUTS FOR 6 NUMBERS
-        {hits: [7,6,5,4,3],     pays: [7000,400,21,2,1],                occurrence: [5,10,20,30,35]},       //PAYOUTS FOR 7 NUMBERS
-        {hits: [8,7,6,5,4],     pays: [10000,1650,100,12,2],            occurrence: [5,10,20,30,35]},       //PAYOUTS FOR 8 NUMBERS
-        {hits: [9,8,7,6,5,4],   pays: [10000,4700,335,44,6,1],          occurrence: [1,4,10,20,30,35]},     //PAYOUTS FOR 9 NUMBERS
-        {hits: [10,9,8,7,6,5],  pays: [10000,4500,1000,142,24,5],       occurrence: [1,4,10,15,30,40]}      //PAYOUTS FOR 10 NUMBERS
+        { hits: ['-'],           pays: ['-'],                            occurrence: [0]},                   //PAYOUTS FOR 1 NUMBERS
+        { hits: [2,1],           pays: [9,1],                            occurrence: [20,80]},               //PAYOUTS FOR 2 NUMBERS
+        { hits: [3,2],           pays: [47,2],                           occurrence: [20,80]},               //PAYOUTS FOR 3 NUMBERS
+        { hits: [4,3,2],         pays: [91,5,2],                         occurrence: [10,30,60]},            //PAYOUTS FOR 4 NUMBERS
+        { hits: [5,4,3],         pays: [820,12,3],                       occurrence: [10,30,60]},            //PAYOUTS FOR 5 NUMBERS
+        { hits: [6,5,4,3],       pays: [1600,70,4,3],                    occurrence: [10,20,30,40]},         //PAYOUTS FOR 6 NUMBERS
+        { hits: [7,6,5,4,3],     pays: [7000,400,21,2,1],                occurrence: [5,10,20,30,35]},       //PAYOUTS FOR 7 NUMBERS
+        { hits: [8,7,6,5,4],     pays: [10000,1650,100,12,2],            occurrence: [5,10,20,30,35]},       //PAYOUTS FOR 8 NUMBERS
+        { hits: [9,8,7,6,5,4],   pays: [10000,4700,335,44,6,1],          occurrence: [1,4,10,20,30,35]},     //PAYOUTS FOR 9 NUMBERS
+        { hits: [10,9,8,7,6,5],  pays: [10000,4500,1000,142,24,5],       occurrence: [1,4,10,15,30,40]}      //PAYOUTS FOR 10 NUMBERS
       ],
       animation_speed : 300,
       fullscreen:true, //SET THIS TO FALSE IF YOU DON'T WANT TO SHOW FULLSCREEN BUTTON
@@ -75,7 +75,7 @@ class Keno extends Component {
       });
 
       $(oMain).on("end_session", function(evt) {
-          if(getParamValue('ctl-arcade') === "true"){
+          if(getParamValue('ctl-arcade') === 'true'){
             this.state.parent.__ctlArcadeEndSession();
           }
           //...ADD YOUR CODE HERE EVENTUALLY
@@ -112,9 +112,9 @@ class Keno extends Component {
           //...ADD YOUR CODE HERE EVENTUALLY
       });
 
-      if(isIOS()){ 
+      if(isIOS()) { 
         setTimeout(function(){sizeHandler();},200); 
-      }else{ 
+      } else { 
         sizeHandler(); 
       }
   }

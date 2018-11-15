@@ -5,7 +5,7 @@
  */
 
 function CSpriteLibrary() {
-    let _oLibSprites;
+    this._oLibSprites = {};
     let _iNumSprites = 0;
     let _iCntSprites = 0;
     var _cbCompleted;
@@ -21,22 +21,20 @@ function CSpriteLibrary() {
         _cbCompleted = cbCompleted;
         _cbTotalCompleted = cbTotalCompleted;
         _cbOwner     = cbOwner;
-		
-        _oLibSprites = {};
     }
     
     this.addSprite = function(szKey, szPath){
-        if (!_oLibSprites.hasOwnProperty(szKey)){
-            _oLibSprites[szKey] = { szPath:szPath, oSprite: new Image() };
+        if (!this._oLibSprites.hasOwnProperty(szKey)){
+            this._oLibSprites[szKey] = { szPath:szPath, oSprite: new Image() };
             _iNumSprites++;
         }
     }
     
-    this.getSprite = function( szKey ){
-        if (!_oLibSprites.hasOwnProperty(szKey)){
+    this.getSprite = function(szKey) {
+        if (!this._oLibSprites.hasOwnProperty(szKey)){
             return null;
         }else{
-            return _oLibSprites[szKey].oSprite;
+            return this._oLibSprites[szKey].oSprite;
         }
     }
     
@@ -52,12 +50,12 @@ function CSpriteLibrary() {
     }    
 
     this.loadSprites = function () {
-        for (var szKey in _oLibSprites) {
-            _oLibSprites[szKey].oSprite["oSpriteLibrary"] = this;
-            _oLibSprites[szKey].oSprite.onload = function() {
+        for (var szKey in this._oLibSprites) {
+            this._oLibSprites[szKey].oSprite["oSpriteLibrary"] = this;
+            this._oLibSprites[szKey].oSprite.onload = function() {
                 this.oSpriteLibrary._onSpriteLoaded();
             };
-            _oLibSprites[szKey].oSprite.src = _oLibSprites[szKey].szPath;
+            this._oLibSprites[szKey].oSprite.src = this._oLibSprites[szKey].szPath;
         } 
     }
     

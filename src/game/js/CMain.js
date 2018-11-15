@@ -10,34 +10,44 @@ import CPreloader from './CPreloader.js'
 import {
     playSound
 } from './ctl_utils.js'
-import {
-    STATE_MENU,
-    // STATE_HELP,
-    STATE_GAME,
-    STATE_LOADING,
-    DISABLE_SOUND_MOBILE,
-    // ENABLE_CHECK_ORIENTATION,
-    // ENABLE_FULLSCREEN,
-    // SHOW_CREDITS,
-} from './settings.js'
+// import {
+//     STATE_MENU,
+//     // STATE_HELP,
+//     STATE_GAME,
+//     STATE_LOADING,
+//     DISABLE_SOUND_MOBILE,
+//     // ENABLE_CHECK_ORIENTATION,
+//     // ENABLE_FULLSCREEN,
+//     // SHOW_CREDITS,
+// } from './settings.js'
+import settings from './settings.js'
 
 function CMain (oData) {
-    // let _spriteLibrary = null
 
     var _bUpdate;
     let soundsLoadedCnt = 0;
     let imagesLoadedCnt = 0;
     let loadResources = 0;
-    var _iState = STATE_LOADING;
-    var _oData;
+    var _iState = settings.STATE_LOADING;
+    // var _oData;
     
     var _oPreloader;
-    var _oMenu;
+    // var _oMenu;
     var _oHelp;
-    var _oGame;
+    // var _oGame;
+
+    // state
+    this.state = {
+        initData: oData || {},
+        audioActive: true,
+        menu: null,
+        game: null
+    }
+        
+    // _oData = oData;
 
     this.init = function() {
-        s_oCanvas = document.getElementById("canvas");
+        s_oCanvas = document.getElementById('canvas');
         s_oStage = new createjs.Stage(s_oCanvas);
         createjs.Touch.enable(s_oStage);
 
@@ -53,7 +63,7 @@ function CMain (oData) {
         createjs.Ticker.framerate = 30;
         
         if(navigator.userAgent.match(/Windows Phone/i)){
-            DISABLE_SOUND_MOBILE = true;
+            settings.DISABLE_SOUND_MOBILE = true;
         }
         
         // _spriteLibrary  = CSpriteLibrary;
@@ -63,7 +73,7 @@ function CMain (oData) {
     };
     
     this.preloaderReady = function() {
-        if(DISABLE_SOUND_MOBILE === false || s_bMobile === false){
+        if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
             this.loadSounds();
         }
         
@@ -107,15 +117,13 @@ function CMain (oData) {
                 preload: true,
                 loop: aSoundsInfo[i].loop, 
                 volume: aSoundsInfo[i].volume,
-                onload: s_oMain.soundLoaded
+                onload: mainInstance().soundLoaded
             });
         }
-        
     };  
 
-    this.loadImages = function(){
+    this.loadImages = function() {
         CSpriteLibrary.init( this._onImagesLoaded,this._onAllImagesLoaded, this );
-
         CSpriteLibrary.addSprite("but_play", "./sprites/but_play.png");
         CSpriteLibrary.addSprite("msg_box", "./sprites/msg_box.png");
         
@@ -159,17 +167,31 @@ function CMain (oData) {
     this._onAllImagesLoaded = function(){
     };
 
-    this.gotoMenu = function(){
-        _oMenu = new CMenu();
-        _iState = STATE_MENU;
+    this.gotoMenu = function() {
+        console.log('-------go to menu ----------')
+        // console.log(this.state.menu)
+        // if (!this.state.menu) {
+        //     this.state.menu = CMenu(true);
+        // }
+        this.state.menu = CMenu(true);
+        _iState = settings.STATE_MENU;
     };
 
-    this.gotoGame = function(){
-        _oGame = new CGame(_oData);   						
-        _iState = STATE_GAME;
+    this.gotoGame = function() {
+        console.log('-------go to game----------')
+        this.state.game = new CGame(true, this.state.initData);   						
+        _iState = settings.STATE_GAME;
 
-        $(s_oMain).trigger("game_start");
+        $(mainInstance()).trigger("game_start");
     };
+
+    this.getAudioActive = function () {
+        return this.state.audioActive
+    }
+
+    this.setAudioActive = function (value) {
+        this.state.audioActive = value
+    }
     
     // this.gotoHelp = function(){
     //     _oHelp = new CHelp();
@@ -181,7 +203,7 @@ function CMain (oData) {
         createjs.Ticker.paused = true;
         $("#block_game").css("display","block");
         
-        if(DISABLE_SOUND_MOBILE === false || s_bMobile === false){
+        if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
             Howler.mute(true);
         }
         
@@ -193,17 +215,17 @@ function CMain (oData) {
         createjs.Ticker.paused = false;
         $("#block_game").css("display","none");
         
-        if(DISABLE_SOUND_MOBILE === false || s_bMobile === false){
-            if(s_bAudioActive){
+        if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
+            if(this.state.audioActive){
                 Howler.mute(false);
             }
         }
         
     };
     
-    this._update = function(event){
-        if(_bUpdate === false){
-                return;
+    this._update = (event) => {
+        if(_bUpdate === false) {
+             return;
         }
         var iCurTime = new Date().getTime();
         s_iTimeElaps = iCurTime - s_iPrevTime;
@@ -217,16 +239,15 @@ function CMain (oData) {
             s_iCntFps = 0;
         }
                 
-        if(_iState === STATE_GAME){
-            _oGame.update();
+        if(_iState === settings.STATE_GAME) {
+            this.state.game.update();
         }
         
         s_oStage.update(event);
 
     };
-    s_oMain = this;
-    
-    _oData = oData;
+    // s_oMain = this;
+
     // TODO(jiwoniy)
     // ENABLE_CHECK_ORIENTATION = oData.check_orientation;
     // ENABLE_FULLSCREEN = oData.fullscreen;
@@ -236,7 +257,6 @@ function CMain (oData) {
 }
 
 var s_bMobile;
-var s_bAudioActive = true;
 var s_iCntTime = 0;
 var s_iTimeElaps = 0;
 var s_iPrevTime = 0;
@@ -245,7 +265,7 @@ var s_iCurFps = 0;
 
 var s_oDrawLayer;
 var s_oStage;
-var s_oMain;
+// var s_oMain;
 // var s_oSpriteLibrary;
 var s_oSoundTrack = null;
 var s_oCanvas;
@@ -253,34 +273,62 @@ var s_aSounds;
 
 var s_bFullscreen = false;
 
-
 const Singleton = (() => {
-    let instance;
+    let instance = null;
   
     function createInstance(data) {
         return new CMain(data);
     }
   
     return {
-      getInstance(data) {
-
-        if (!instance) {
+      getInstance(isConstructor, data) {
+        if (isConstructor && !instance) {
           instance = createInstance(data);
         }
         return instance;
       },
     };
 })();
-  
-// const instance = Singleton.getInstance();
 
+const mainInstance = () => Singleton.getInstance(false)
 export default Singleton.getInstance;
 export {
+    mainInstance,
     s_oStage,
     s_bMobile,
-    s_oMain,
+    // s_oMain,
     s_aSounds,
     // s_oSpriteLibrary,
     s_bFullscreen,
-    s_bAudioActive
 } 
+
+// const Singleton = (() => {
+//     let instance;
+//     function createInstance() {
+//         return new CInterface();
+//     }
+  
+//     return {
+//       getInstance: () => {
+//           console.log(!mainInterface)
+//         if (!mainInterface) {
+//             return null
+//         } else if (mainInterface && !instance) {
+//             console.log(mainInterface)
+//             console.log('---create--')
+//             // This logic shoud be run after CGMain logic
+//           instance = createInstance();
+//           return instance;
+//         } else {
+//             return instance;
+//         }
+//       },
+//     };
+// })();
+// const interfaceInstance = Singleton.getInstance()
+
+// // export default CInterface;
+// export default Singleton.getInstance;
+// export {
+//     interfaceInstance
+// }

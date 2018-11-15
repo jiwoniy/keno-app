@@ -17,27 +17,23 @@ import CCreditsPanel from './CCreditsPanel.js'
 import CSpriteLibrary from './sprite_lib'
 // import CMain from './CMain.js'
 import {
-    s_oMain,
+    mainInstance,
     s_bMobile,
     s_oStage,
     // s_oSpriteLibrary,
     s_bFullscreen,
-    s_bAudioActive
 } from './CMain.js'
-import {
-    CANVAS_WIDTH,
-    CANVAS_HEIGHT,
-    ON_MOUSE_UP,
-    ENABLE_FULLSCREEN,
-    DISABLE_SOUND_MOBILE,
-    SHOW_CREDITS
-} from './settings.js'
+// import {
+//     CANVAS_WIDTH,
+//     CANVAS_HEIGHT,
+//     ON_MOUSE_UP,
+//     ENABLE_FULLSCREEN,
+//     DISABLE_SOUND_MOBILE,
+//     SHOW_CREDITS
+// } from './settings.js'
+import settings from './settings.js'
 
-import {
-    s_oMenu
-} from './global'
-
-function CMenu(){
+function CMenu() {
     var _oBg;
     var _oButPlay;
     var _oFade;
@@ -51,26 +47,26 @@ function CMenu(){
     var _pStartPosFullscreen;
     var _pStartPosCredits;
     
-    this._init = function(){
+    this.init = function() {
         _oBg = createBitmap(CSpriteLibrary.getSprite('bg_menu'));
         s_oStage.addChild(_oBg);
 
         var oSprite = CSpriteLibrary.getSprite('but_play');
-        _oButPlay = new CGfxButton((CANVAS_WIDTH/2),CANVAS_HEIGHT -200,oSprite);
-        _oButPlay.addEventListener(ON_MOUSE_UP, this._onButPlayRelease, this);
-     
-        if(DISABLE_SOUND_MOBILE === false || s_bMobile === false){
+        _oButPlay = new CGfxButton((settings.CANVAS_WIDTH/2),settings.CANVAS_HEIGHT -200,oSprite);
+        _oButPlay.addEventListener(settings.ON_MOUSE_UP, this._onButPlayRelease, this);
+    
+        if (settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
             var oSprite = CSpriteLibrary.getSprite('audio_icon');
-            _pStartPosAudio = {x: CANVAS_WIDTH - (oSprite.height/2)- 10, y: (oSprite.height/2) + 10};            
-            _oAudioToggle = new CToggle(_pStartPosAudio.x,_pStartPosAudio.y,oSprite,s_bAudioActive);
-            _oAudioToggle.addEventListener(ON_MOUSE_UP, this._onAudioToggle, this);          
+            _pStartPosAudio = {x: settings.CANVAS_WIDTH - (oSprite.height/2)- 10, y: (oSprite.height/2) + 10};            
+            _oAudioToggle = new CToggle(_pStartPosAudio.x,_pStartPosAudio.y,oSprite, mainInstance().getAudioActive());
+            _oAudioToggle.addEventListener(settings.ON_MOUSE_UP, this._onAudioToggle, this);          
         }
         
         var oSprite = CSpriteLibrary.getSprite('but_info');
-        if(SHOW_CREDITS){
+        if(settings.SHOW_CREDITS){
             _pStartPosCredits = {x:10 + oSprite.width/2,y:(oSprite.height / 2) + 10};
             _oButCredits = new CGfxButton(_pStartPosCredits.x, _pStartPosCredits.y, oSprite,s_oStage);
-            _oButCredits.addEventListener(ON_MOUSE_UP, this._onCredits, this);
+            _oButCredits.addEventListener(settings.ON_MOUSE_UP, this._onCredits, this);
             
             _pStartPosFullscreen = {x:_pStartPosCredits.x + oSprite.width + 10,y:_pStartPosCredits.y};
         }else{
@@ -82,7 +78,7 @@ function CMenu(){
         _fRequestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
         _fCancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
         
-        if(ENABLE_FULLSCREEN === false){
+        if(settings.ENABLE_FULLSCREEN === false){
             _fRequestFullScreen = false;
         }
         
@@ -91,26 +87,25 @@ function CMenu(){
             
 
             _oButFullscreen = new CToggle(_pStartPosFullscreen.x,_pStartPosFullscreen.y,oSprite,s_bFullscreen,true);
-            _oButFullscreen.addEventListener(ON_MOUSE_UP, this._onFullscreenRelease, this);
+            _oButFullscreen.addEventListener(settings.ON_MOUSE_UP, this._onFullscreenRelease, this);
         }
         
         _oFade = new createjs.Shape();
-        _oFade.graphics.beginFill("black").drawRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
+        _oFade.graphics.beginFill("black").drawRect(0,0,settings.CANVAS_WIDTH,settings.CANVAS_HEIGHT);
         
         s_oStage.addChild(_oFade);
         
         createjs.Tween.get(_oFade).to({alpha:0}, 1000).call(function(){_oFade.visible = false;});  
         
         this.refreshButtonPos(s_iOffsetX,s_iOffsetY);
-        
     };
     
-    this.unload = function(){
+    this.unload = function() {
         _oButPlay.unload(); 
         _oButPlay = null;
         _oFade.visible = false;
         
-        if(DISABLE_SOUND_MOBILE === false || s_bMobile === false){
+        if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
             _oAudioToggle.unload();
             _oAudioToggle = null;
         }
@@ -119,21 +114,21 @@ function CMenu(){
             _oButFullscreen.unload();
         }
         
-        if(SHOW_CREDITS){
+        if(settings.SHOW_CREDITS){
             _oButCredits.unload();
         }
         
         s_oStage.removeChild(_oBg);
         _oBg = null;
-        s_oMenu = null;
+        // s_oMenu = null;
     };
     
     this.refreshButtonPos = function(iNewX,iNewY){
-        if(DISABLE_SOUND_MOBILE === false || s_bMobile === false){
+        if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
             _oAudioToggle.setPosition(_pStartPosAudio.x - iNewX,iNewY + _pStartPosAudio.y);
         }
         
-        if(SHOW_CREDITS){
+        if(settings.SHOW_CREDITS){
             _oButCredits.setPosition(_pStartPosCredits.x + iNewX,_pStartPosCredits.y + iNewY);
         }
         
@@ -142,44 +137,65 @@ function CMenu(){
         }
     };
     
-    this._onAudioToggle = function(){
-        Howler.mute(s_bAudioActive);
-        s_bAudioActive = !s_bAudioActive;
+    this._onAudioToggle = function() {
+        Howler.mute(mainInstance().getAudioActive());
+        mainInstance().setAudioActive(!mainInstance().getAudioActive())
     };
     
-    this._onButPlayRelease = function(){
+    this._onButPlayRelease = function() {
         this.unload();
         
-        $(s_oMain).trigger("start_session"); 
-        s_oMain.gotoGame();
+        $(mainInstance()).trigger("start_session"); 
+        mainInstance().gotoGame();
     };
     
-    this.resetFullscreenBut = function(){
-	if (_fRequestFullScreen && screenfull.enabled){
-		_oButFullscreen.setActive(s_bFullscreen);
-	}
+    this.resetFullscreenBut = function() {
+        if (_fRequestFullScreen && screenfull.enabled){
+            _oButFullscreen.setActive(s_bFullscreen);
+        }
     };
 
     this._onFullscreenRelease = function(){
-        if(s_bFullscreen) { 
-		_fCancelFullScreen.call(window.document);
-	}else{
-		_fRequestFullScreen.call(window.document.documentElement);
-	}
+        if (s_bFullscreen) { 
+		    _fCancelFullScreen.call(window.document);
+        } else {
+            _fRequestFullScreen.call(window.document.documentElement);
+        }
 	
-	sizeHandler();
+	    sizeHandler();
     };
     
     this._onCredits = function(){
-        // TODO 긴가민가..
+        // TODO (jiwoniy)
         var _oCreditsPanel = new CCreditsPanel();
     };
+    // console.log(s_oMenu)
+    // console.log(this)
+    // s_oMenu = this;
     
-    s_oMenu = this;
-    
-    this._init();
+    this.init();
 }
 
-// var s_oMenu = null;
+const Singleton = (() => {
+    let instance = null;
+  
+    function createInstance() {
+        return new CMenu();
+    }
+  
+    return {
+      getInstance(isConstructor) {
+        if (isConstructor) {
+            instance = createInstance();
+        } else if (!isConstructor && !instance) {
+            instance = createInstance();
+        }
+        // if (isConstructor && !instance) {
+        //   instance = createInstance();
+        // }
+        return instance;
+      },
+    };
+})();
 
-export default CMenu;
+export default Singleton.getInstance;

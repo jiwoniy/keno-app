@@ -8,26 +8,17 @@ import {
     s_iOffsetY,
     sizeHandler
 } from './ctl_utils.js'
-// import CMain from './CMain.js'
 import CSpriteLibrary from './sprite_lib'
 
 import {
-    s_oMain,
+    mainInstance,
+    // s_oMain,
     s_bMobile,
     s_oStage,
     // s_oSpriteLibrary,
     s_bFullscreen,
-    s_bAudioActive
 } from './CMain.js'
-import {
-    CANVAS_WIDTH,
-    CANVAS_HEIGHT,
-    ON_MOUSE_UP,
-    ENABLE_FULLSCREEN,
-    DISABLE_SOUND_MOBILE,
-    START_PLAYER_MONEY,
-    PRIMARY_FONT,
-} from './settings.js'
+import settings from './settings.js'
 import {
     TEXT_MIN,
     TEXT_UNDO,
@@ -39,19 +30,15 @@ import {
 } from './CLang.js'
 
 import {
-    s_oGame
+    gameInstance
 } from './CGame.js'
 import CToggle from './CToggle.js'
 import CGfxButton from './CGfxButton.js'
 import CTextToggle from './CTextToggle.js'
 import CDisplayPanel from './CDisplayPanel.js'
 
-import {
-    s_oInterface
-} from './global'
-// var s_oInterface = null;
-
-function CInterface(){
+// TODO (jiwoniy)function ===> Class
+function CInterface() {
     var _oAudioToggle;
     var _oButExit;
     var _oButMin;
@@ -70,21 +57,21 @@ function CInterface(){
     var _pStartPosAudio;
     var _pStartPosFullscreen;
     
-    this._init = function(){                
+    this.initInterface = function() {                
         var oExitX;        
         
         var oSprite = CSpriteLibrary.getSprite('but_exit');
-        _pStartPosExit = {x: CANVAS_WIDTH - (oSprite.height/2)- 20, y: (oSprite.height/2) + 10};
+        _pStartPosExit = {x: settings.CANVAS_WIDTH - (oSprite.height/2)- 20, y: (oSprite.height/2) + 10};
         _oButExit = new CGfxButton(_pStartPosExit.x, _pStartPosExit.y, oSprite,true);
-        _oButExit.addEventListener(ON_MOUSE_UP, this._onExit, this);
+        _oButExit.addEventListener(settings.ON_MOUSE_UP, this._onExit, this);
         
-        oExitX = CANVAS_WIDTH - (oSprite.width/2) - 100;
+        oExitX = settings.CANVAS_WIDTH - (oSprite.width/2) - 100;
         _pStartPosAudio = {x: oExitX-15, y: (oSprite.height/2) + 10};
         
-        if(DISABLE_SOUND_MOBILE === false || s_bMobile === false){
+        if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
             var oSprite = CSpriteLibrary.getSprite('audio_icon');
-            _oAudioToggle = new CToggle(_pStartPosAudio.x,_pStartPosAudio.y,oSprite,s_bAudioActive);
-            _oAudioToggle.addEventListener(ON_MOUSE_UP, this._onAudioToggle, this);          
+            _oAudioToggle = new CToggle(_pStartPosAudio.x,_pStartPosAudio.y,oSprite, mainInstance().getAudioActive());
+            _oAudioToggle.addEventListener(settings.ON_MOUSE_UP, this._onAudioToggle, this);          
         }
         
         var doc = window.document;
@@ -92,7 +79,7 @@ function CInterface(){
         _fRequestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
         _fCancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
         
-        if(ENABLE_FULLSCREEN === false){
+        if(settings.ENABLE_FULLSCREEN === false){
             _fRequestFullScreen = false;
         }
         
@@ -101,58 +88,58 @@ function CInterface(){
             _pStartPosFullscreen = {x:oSprite.width/4 + 10,y:oSprite.height/2 + 10};
 
             _oButFullscreen = new CToggle(_pStartPosFullscreen.x,_pStartPosFullscreen.y,oSprite,s_bFullscreen,true);
-            _oButFullscreen.addEventListener(ON_MOUSE_UP, this._onFullscreenRelease, this);
+            _oButFullscreen.addEventListener(settings.ON_MOUSE_UP, this._onFullscreenRelease, this);
         }
         
         var oSprite = CSpriteLibrary.getSprite('money_panel');
-        _oMoneyDisplay = new CDisplayPanel(370,CANVAS_HEIGHT - 225,oSprite,TEXT_CURRENCY +START_PLAYER_MONEY,PRIMARY_FONT,"#ffffff",40);
+        _oMoneyDisplay = new CDisplayPanel(370,settings.CANVAS_HEIGHT - 225,oSprite,TEXT_CURRENCY +settings.START_PLAYER_MONEY,settings.PRIMARY_FONT,"#ffffff",40);
 
         var oSprite = CSpriteLibrary.getSprite('plus_display');
-        _oBetDisplay = new CDisplayPanel(480,CANVAS_HEIGHT - 130,oSprite,"$1",PRIMARY_FONT,"#ffffff",40, false, s_oStage);
+        _oBetDisplay = new CDisplayPanel(480,settings.CANVAS_HEIGHT - 130,oSprite,"$1",settings.PRIMARY_FONT,"#ffffff",40, false, s_oStage);
         _oBetDisplay.setTextPosition(51);
 
         var oSprite = CSpriteLibrary.getSprite('but_plus');
-        _oButPlus = new CTextToggle(638,CANVAS_HEIGHT - 130,oSprite,TEXT_PLUS,PRIMARY_FONT,"#ffffff",70, false, s_oStage);
+        _oButPlus = new CTextToggle(638,settings.CANVAS_HEIGHT - 130,oSprite,TEXT_PLUS,settings.PRIMARY_FONT,"#ffffff",70, false, s_oStage);
         _oButPlus.enable();
         _oButPlus.setTextPosition(0,20);
-        _oButPlus.addEventListener(ON_MOUSE_UP, this._onButPlusRelease, this);
+        _oButPlus.addEventListener(settings.ON_MOUSE_UP, this._onButPlusRelease, this);
 
         var oSprite = CSpriteLibrary.getSprite('but_plus');
-        _oButMin = new CTextToggle(320,CANVAS_HEIGHT - 130,oSprite,TEXT_MIN,PRIMARY_FONT,"#ffffff",70, false, s_oStage);
+        _oButMin = new CTextToggle(320,settings.CANVAS_HEIGHT - 130,oSprite,TEXT_MIN,settings.PRIMARY_FONT,"#ffffff",70, false, s_oStage);
         _oButMin.enable();
         _oButMin.setTextPosition(0,20);
         _oButMin.setScaleX(-1);
-        _oButMin.addEventListener(ON_MOUSE_UP, this._onButMinRelease, this);
+        _oButMin.addEventListener(settings.ON_MOUSE_UP, this._onButMinRelease, this);
 
         var oSprite = CSpriteLibrary.getSprite('but_generic');
-        _oButPlay1 = new CTextToggle(820,CANVAS_HEIGHT - 130,oSprite, TEXT_PLAY1,PRIMARY_FONT,"#ffffff",30, false, s_oStage);
+        _oButPlay1 = new CTextToggle(820,settings.CANVAS_HEIGHT - 130,oSprite, TEXT_PLAY1,settings.PRIMARY_FONT,"#ffffff",30, false, s_oStage);
         _oButPlay1.disable();
         _oButPlay1.setTextPosition(0,10);
-        _oButPlay1.addEventListener(ON_MOUSE_UP, this._onPlay1, this);
+        _oButPlay1.addEventListener(settings.ON_MOUSE_UP, this._onPlay1, this);
         
         var oSprite = CSpriteLibrary.getSprite('but_generic');
-        _oButPlay5 = new CTextToggle(1060,CANVAS_HEIGHT - 130,oSprite, TEXT_PLAY5,PRIMARY_FONT,"#ffffff",30, false, s_oStage);
+        _oButPlay5 = new CTextToggle(1060,settings.CANVAS_HEIGHT - 130,oSprite, TEXT_PLAY5,settings.PRIMARY_FONT,"#ffffff",30, false, s_oStage);
         _oButPlay5.disable();
         _oButPlay5.setTextPosition(0,10);
-        _oButPlay5.addEventListener(ON_MOUSE_UP, this._onPlay5, this);
+        _oButPlay5.addEventListener(settings.ON_MOUSE_UP, this._onPlay5, this);
 
         var oSprite = CSpriteLibrary.getSprite('but_generic');
-        _oButUndo = new CTextToggle(1300,CANVAS_HEIGHT - 130,oSprite, TEXT_UNDO,PRIMARY_FONT,"#ffffff",30, false, s_oStage);
+        _oButUndo = new CTextToggle(1300,settings.CANVAS_HEIGHT - 130,oSprite, TEXT_UNDO,settings.PRIMARY_FONT,"#ffffff",30, false, s_oStage);
         _oButUndo.enable();
         _oButUndo.setTextPosition(0,10);
-        _oButUndo.addEventListener(ON_MOUSE_UP, this._onUndo, this);
+        _oButUndo.addEventListener(settings.ON_MOUSE_UP, this._onUndo, this);
         
         var oSprite = CSpriteLibrary.getSprite('but_generic');
-        _oButClear = new CTextToggle(1540,CANVAS_HEIGHT - 130,oSprite, TEXT_CLEAR,PRIMARY_FONT,"#ffffff",30, false, s_oStage);
+        _oButClear = new CTextToggle(1540,settings.CANVAS_HEIGHT - 130,oSprite, TEXT_CLEAR,settings.PRIMARY_FONT,"#ffffff",30, false, s_oStage);
         _oButClear.enable();
         _oButClear.setTextPosition(0,10);
-        _oButClear.addEventListener(ON_MOUSE_UP, this._onClear, this);
+        _oButClear.addEventListener(settings.ON_MOUSE_UP, this._onClear, this);
        
        this.refreshButtonPos(s_iOffsetX,s_iOffsetY);
     };
     
-    this.unload = function(){
-        if(DISABLE_SOUND_MOBILE === false || s_bMobile === false){
+    this.unload = function() {
+        if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
             _oAudioToggle.unload();
             _oAudioToggle = null;
         }
@@ -170,13 +157,12 @@ function CInterface(){
             _oButFullscreen.unload();
         }
         
-        s_oInterface = null;
-        
+        // s_oInterface = null;
     };
     
-    this.refreshButtonPos = function(iNewX,iNewY){
+    this.refreshButtonPos = function(iNewX,iNewY) {
         _oButExit.setPosition(_pStartPosExit.x - iNewX,iNewY + _pStartPosExit.y);
-        if(DISABLE_SOUND_MOBILE === false || s_bMobile === false){
+        if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
             _oAudioToggle.setPosition(_pStartPosAudio.x - iNewX,iNewY + _pStartPosAudio.y);
         }
         if (_fRequestFullScreen && screenfull.enabled){
@@ -184,15 +170,15 @@ function CInterface(){
         }
     };
 
-    this.refreshBet = function(szValue){
+    this.refreshBet = function(szValue) {
         _oBetDisplay.setText(TEXT_CURRENCY + szValue);
     };
 
-    this.refreshMoney = function(szValue){
+    this.refreshMoney = function(szValue) {
         _oMoneyDisplay.setText(TEXT_CURRENCY + szValue)
     };
     
-    this.enablePlus = function(bVal){
+    this.enablePlus = function(bVal) {
         if(bVal){
             _oButPlus.enable();
         }else {
@@ -200,7 +186,7 @@ function CInterface(){
         }        
     };
     
-    this.enableMin = function(bVal){
+    this.enableMin = function(bVal) {
         if(bVal){
             _oButMin.enable();
         }else {
@@ -208,7 +194,7 @@ function CInterface(){
         } 
     };
 
-    this.enablePlay1 = function(bVal){
+    this.enablePlay1 = function(bVal) {
         if(bVal){
             _oButPlay1.enable();
         }else {
@@ -216,7 +202,7 @@ function CInterface(){
         }        
     };
 
-    this.enablePlay5 = function(bVal){
+    this.enablePlay5 = function(bVal) {
         if(bVal){
             _oButPlay5.enable();
         }else {
@@ -224,7 +210,7 @@ function CInterface(){
         }
     };
     
-    this.enableUndo = function(bVal){
+    this.enableUndo = function(bVal) {
         if(bVal){
             _oButUndo.enable();
         }else {
@@ -232,7 +218,7 @@ function CInterface(){
         }
     };
 
-    this.enableClear = function(bVal){
+    this.enableClear = function(bVal) {
         if(bVal){
             _oButClear.enable();
         }else {
@@ -240,7 +226,7 @@ function CInterface(){
         }
     };
 
-    this.enableAllButton = function(bVal){
+    this.enableAllButton = function(bVal) {
         this.enablePlus(bVal);
         this.enableMin(bVal);
         this.enablePlay1(bVal);
@@ -250,65 +236,84 @@ function CInterface(){
         
     };
 
-    this._onClear = function(){
-        s_oGame.clearSelection();
+    this._onClear = function() {
+        gameInstance().clearSelection();
     };
     
-    this._onUndo = function(){
-        s_oGame.undoSelection();
+    this._onUndo = function() {
+        gameInstance().undoSelection();
     };
     
-    this._onButPlusRelease = function(){
-        s_oGame.selectBet("add");
+    this._onButPlusRelease = function() {
+        gameInstance().selectBet("add");
     };
     
-    this._onButMinRelease = function(){
-        s_oGame.selectBet("remove");
+    this._onButMinRelease = function() {
+        gameInstance().selectBet("remove");
     };
     
-    this._onPlay1 = function(){
-        s_oGame.play();
+    this._onPlay1 = function() {
+        gameInstance().play();
     };
     
-    this._onPlay5 = function(){
-        s_oGame.play5();
+    this._onPlay5 = function() {
+        gameInstance().play5();
     };
     
-    this._onAudioToggle = function(){
-        Howler.mute(s_bAudioActive);
-        s_bAudioActive = !s_bAudioActive;
+    this._onAudioToggle = function() {
+        Howler.mute(mainInstance().getAudioActive());
+        mainInstance().setAudioActive(!mainInstance().getAudioActive())
     };
     
-    this.resetFullscreenBut = function(){
-	if (_fRequestFullScreen && screenfull.enabled){
-		_oButFullscreen.setActive(s_bFullscreen);
-	}
+    this.resetFullscreenBut = function() {
+        if (_fRequestFullScreen && screenfull.enabled){
+            _oButFullscreen.setActive(s_bFullscreen);
+        }
     };
     
-    this._onFullscreenRelease = function(){
-        if(s_bFullscreen) { 
-		_fCancelFullScreen.call(window.document);
-	}else{
-		_fRequestFullScreen.call(window.document.documentElement);
-	}
-	
-	sizeHandler();
-    };
-    
-    this._onExit = function(){
-        $(s_oMain).trigger("end_session");
+    this._onFullscreenRelease = function() {
+        if(s_bFullscreen) {
+		    _fCancelFullScreen.call(window.document);
+        } else {
+            _fRequestFullScreen.call(window.document.documentElement);
+        }
         
-        var iCurPlayerMoney = s_oGame.getCurMoney();
-        $(s_oMain).trigger("share_event",iCurPlayerMoney);
-        
-      s_oGame.onExit();  
+	    sizeHandler();
     };
     
-    s_oInterface = this;
+    this._onExit = function() {
+        $(mainInstance()).trigger("end_session");
+        
+        const iCurPlayerMoney = gameInstance().getCurMoney();
+        $(mainInstance()).trigger("share_event",iCurPlayerMoney);
+        
+        gameInstance().onExit();  
+    };
     
-    this._init();
+    // s_oInterface = this;
     
-    return this;
+    this.initInterface();
 }
 
-export default CInterface;
+const Singleton = (() => {
+    let instance = null;
+    function createInstance() {
+        return new CInterface();
+    }
+  
+    return {
+      getInstance: (isConstructor = false) => {
+          // flag === true ===> constructor
+        if (isConstructor && !instance) {
+          instance = createInstance();
+        }
+        return instance;
+      },
+    };
+})();
+const interfaceInstance = Singleton.getInstance()
+
+export default Singleton.getInstance;
+export {
+    interfaceInstance
+}

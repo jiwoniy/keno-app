@@ -2,57 +2,62 @@ import $ from 'jquery'
 import createjs from './createjs.js'
 
 import screenfull from './screenfull.js'
-import {
-    CANVAS_WIDTH,
-    CANVAS_HEIGHT,
+// import {
+//     CANVAS_WIDTH,
+//     CANVAS_HEIGHT,
 
-    EDGEBOARD_X,
-    EDGEBOARD_Y,
+//     EDGEBOARD_X,
+//     EDGEBOARD_Y,
 
-    // FPS_TIME,
-    DISABLE_SOUND_MOBILE,
+//     // FPS_TIME,
+//     DISABLE_SOUND_MOBILE,
 
-    // PRIMARY_FONT,
-    // SECONDARY_FONT,
-    // PRIMARY_FONT_COLOUR,
+//     // PRIMARY_FONT,
+//     // SECONDARY_FONT,
+//     // PRIMARY_FONT_COLOUR,
 
-    // STATE_LOADING,
-    // STATE_MENU,
-    // STATE_HELP,
-    // STATE_GAME,
+//     // STATE_LOADING,
+//     // STATE_MENU,
+//     // STATE_HELP,
+//     // STATE_GAME,
 
-    // ON_MOUSE_DOWN,
-    // ON_MOUSE_UP,
-    // ON_MOUSE_OVER,
-    // ON_MOUSE_OUT,
-    // ON_DRAG_START,
-    // ON_DRAG_END,
+//     // ON_MOUSE_DOWN,
+//     // ON_MOUSE_UP,
+//     // ON_MOUSE_OVER,
+//     // ON_MOUSE_OUT,
+//     // ON_DRAG_START,
+//     // ON_DRAG_END,
 
-    // NUM_DIFFERENT_BALLS,
-    // ANIMATION_SPEED,
+//     // NUM_DIFFERENT_BALLS,
+//     // ANIMATION_SPEED,
 
-    // WIN_OCCURRENCE,
-    // PAYOUTS,
+//     // WIN_OCCURRENCE,
+//     // PAYOUTS,
 
-    // BANK,
-    // START_PLAYER_MONEY,
+//     // BANK,
+//     // START_PLAYER_MONEY,
 
-    // BET,
+//     // BET,
 
-    ENABLE_FULLSCREEN,
-    ENABLE_CHECK_ORIENTATION,
-    // SHOW_CREDITS,
-} from './settings.js'
+//     ENABLE_FULLSCREEN,
+//     ENABLE_CHECK_ORIENTATION,
+//     // SHOW_CREDITS,
+// } from './settings.js'
+import settings from './settings.js'
 
 import { 
-    s_oInterface,
+    // s_oInterface,
     s_oMenu
 } from './global.js'
+import {
+    interfaceInstance
+} from './CInterface.js'
+// import CInterface from './CInterface'
 
 import {
     s_oStage,
     s_bMobile,
-    s_oMain,
+    mainInstance,
     s_aSounds,
     s_bFullscreen,
 } from './CMain.js'
@@ -77,45 +82,43 @@ $(window).resize(function() {
 // }
 
 function getSize(Name) {
-       var size;
-       var name = Name.toLowerCase();
-       var document = window.document;
-       var documentElement = document.documentElement;
-       if (window["inner" + Name] === undefined) {
-               // IE6 & IE7 don't have window.innerWidth or innerHeight
-               size = documentElement["client" + Name];
-       }
-       else if (window["inner" + Name] != documentElement["client" + Name]) {
-               // WebKit doesn't include scrollbars while calculating viewport size so we have to get fancy
+    var size;
+    var name = Name.toLowerCase();
+    var document = window.document;
+    var documentElement = document.documentElement;
+    if (window["inner" + Name] === undefined) {
+            // IE6 & IE7 don't have window.innerWidth or innerHeight
+            size = documentElement["client" + Name];
+    } else if (window["inner" + Name] != documentElement["client" + Name]) {
+        // WebKit doesn't include scrollbars while calculating viewport size so we have to get fancy
 
-               // Insert markup to test if a media query will match document.doumentElement["client" + Name]
-               var bodyElement = document.createElement("body");
-               bodyElement.id = "vpw-test-b";
-               bodyElement.style.cssText = "overflow:scroll";
-               var divElement = document.createElement("div");
-               divElement.id = "vpw-test-d";
-               divElement.style.cssText = "position:absolute;top:-1000px";
-               // Getting specific on the CSS selector so it won't get overridden easily
-               divElement.innerHTML = "<style>@media(" + name + ":" + documentElement["client" + Name] + "px){body#vpw-test-b div#vpw-test-d{" + name + ":7px!important}}</style>";
-               bodyElement.appendChild(divElement);
-               documentElement.insertBefore(bodyElement, document.head);
+        // Insert markup to test if a media query will match document.doumentElement["client" + Name]
+        var bodyElement = document.createElement("body");
+        bodyElement.id = "vpw-test-b";
+        bodyElement.style.cssText = "overflow:scroll";
+        var divElement = document.createElement("div");
+        divElement.id = "vpw-test-d";
+        divElement.style.cssText = "position:absolute;top:-1000px";
+        // Getting specific on the CSS selector so it won't get overridden easily
+        divElement.innerHTML = "<style>@media(" + name + ":" + documentElement["client" + Name] + "px){body#vpw-test-b div#vpw-test-d{" + name + ":7px!important}}</style>";
+        bodyElement.appendChild(divElement);
+        documentElement.insertBefore(bodyElement, document.head);
 
-               if (divElement["offset" + Name] == 7) {
-                       // Media query matches document.documentElement["client" + Name]
-                       size = documentElement["client" + Name];
-               }
-               else {
-                       // Media query didn't match, use window["inner" + Name]
-                       size = window["inner" + Name];
-               }
-               // Cleanup
-               documentElement.removeChild(bodyElement);
-       }
-       else {
-               // Default to use window["inner" + Name]
-               size = window["inner" + Name];
-       }
-       return size;
+        if (divElement["offset" + Name] == 7) {
+            // Media query matches document.documentElement["client" + Name]
+            size = documentElement["client" + Name];
+        } else {
+            // Media query didn't match, use window["inner" + Name]
+            size = window["inner" + Name];
+        }
+        // Cleanup
+        documentElement.removeChild(bodyElement);
+    }
+    else {
+            // Default to use window["inner" + Name]
+            size = window["inner" + Name];
+    }
+    return size;
 };
 
 window.addEventListener("orientationchange", onOrientationChange );
@@ -204,35 +207,35 @@ function sizeHandler() {
     
     _checkOrientation(w,h);
         
-	var multiplier = Math.min((h / CANVAS_HEIGHT), (w / CANVAS_WIDTH));
+	var multiplier = Math.min((h / settings.CANVAS_HEIGHT), (w / settings.CANVAS_WIDTH));
 
-	var destW = CANVAS_WIDTH * multiplier;
-	var destH = CANVAS_HEIGHT * multiplier;
+	var destW = settings.CANVAS_WIDTH * multiplier;
+	var destH = settings.CANVAS_HEIGHT * multiplier;
         
     var iAdd = 0;
     if (destH < h) {
         iAdd = h-destH;
         destH += iAdd;
-        destW += iAdd*(CANVAS_WIDTH/CANVAS_HEIGHT);
+        destW += iAdd*(settings.CANVAS_WIDTH / settings.CANVAS_HEIGHT);
     } else  if (destW < w) {
         iAdd = w-destW;
         destW += iAdd;
-        destH += iAdd*(CANVAS_HEIGHT/CANVAS_WIDTH);
+        destH += iAdd*(settings.CANVAS_HEIGHT / settings.CANVAS_WIDTH);
     }
 
     var fOffsetY = ((h / 2) - (destH / 2));
     var fOffsetX = ((w / 2) - (destW / 2));
-    var fGameInverseScaling = (CANVAS_WIDTH/destW);
+    var fGameInverseScaling = (settings.CANVAS_WIDTH / destW);
 
-    if (fOffsetX*fGameInverseScaling < -EDGEBOARD_X ||  
-        fOffsetY*fGameInverseScaling < -EDGEBOARD_Y){
-        multiplier = Math.min( h / (CANVAS_HEIGHT-(EDGEBOARD_Y*2)), w / (CANVAS_WIDTH-(EDGEBOARD_X*2)));
-        destW = CANVAS_WIDTH * multiplier;
-        destH = CANVAS_HEIGHT * multiplier;
+    if (fOffsetX*fGameInverseScaling < - settings.EDGEBOARD_X ||  
+        fOffsetY*fGameInverseScaling < - settings.EDGEBOARD_Y){
+        multiplier = Math.min( h / ( settings.CANVAS_HEIGHT-(settings.EDGEBOARD_Y*2)), w / (settings.CANVAS_WIDTH-(settings.EDGEBOARD_X*2)));
+        destW = settings.CANVAS_WIDTH * multiplier;
+        destH = settings.CANVAS_HEIGHT * multiplier;
         fOffsetY = ( h - destH ) / 2;
         fOffsetX = ( w - destW ) / 2;
         
-        fGameInverseScaling = (CANVAS_WIDTH/destW);
+        fGameInverseScaling = (settings.CANVAS_WIDTH/destW);
     }
 
     s_iOffsetX = (-1*fOffsetX * fGameInverseScaling);
@@ -246,13 +249,14 @@ function sizeHandler() {
         s_iOffsetX = 0;
     }
     
-    if (s_oInterface !== null){
-        s_oInterface.refreshButtonPos( s_iOffsetX,s_iOffsetY);
+    if (interfaceInstance !== null){
+        interfaceInstance.refreshButtonPos( s_iOffsetX,s_iOffsetY);
     }
     
-    if (s_oMenu !== null){
-        s_oMenu.refreshButtonPos( s_iOffsetX,s_iOffsetY);
-    }
+    // TODO (jiwoniy)
+    // if (CMenu() !== null){
+    //     CMenu().refreshButtonPos( s_iOffsetX,s_iOffsetY);
+    // }
         
     if (s_bIsIphone){
         const canvas = document.getElementById('canvas');
@@ -260,7 +264,7 @@ function sizeHandler() {
         s_oStage.canvas.height = destH*2;
         canvas.style.width = destW+"px";
         canvas.style.height = destH+"px";
-        var iScale = Math.min(destW / CANVAS_WIDTH, destH / CANVAS_HEIGHT);
+        var iScale = Math.min(destW / settings.CANVAS_WIDTH, destH / settings.CANVAS_HEIGHT);
         s_iScaleFactor = iScale*2;
         s_oStage.scaleX = s_oStage.scaleY = s_iScaleFactor;  
     } else if(s_bMobile || isChrome()){
@@ -270,7 +274,7 @@ function sizeHandler() {
         s_oStage.canvas.width = destW;
         s_oStage.canvas.height = destH;
 
-        s_iScaleFactor = Math.min(destW / CANVAS_WIDTH, destH / CANVAS_HEIGHT);
+        s_iScaleFactor = Math.min(destW / settings.CANVAS_WIDTH, destH / settings.CANVAS_HEIGHT);
         s_oStage.scaleX = s_oStage.scaleY = s_iScaleFactor; 
     }
         
@@ -286,29 +290,29 @@ function sizeHandler() {
 };
 
 function _checkOrientation(iWidth, iHeight){
-    if(s_bMobile && ENABLE_CHECK_ORIENTATION){
+    if(s_bMobile && settings.ENABLE_CHECK_ORIENTATION){
         if(iWidth > iHeight){ 
             if( $(".orientation-msg-container").attr("data-orientation") === "landscape" ){
                 $(".orientation-msg-container").css("display","none");
-                s_oMain.startUpdate();
+                mainInstance().startUpdate();
             }else{
                 $(".orientation-msg-container").css("display","block");
-                s_oMain.stopUpdate();
+                mainInstance().stopUpdate();
             }  
         }else{
             if( $(".orientation-msg-container").attr("data-orientation") === "portrait" ){
                 $(".orientation-msg-container").css("display","none");
-                s_oMain.startUpdate();
+                mainInstance().startUpdate();
             }else{
                 $(".orientation-msg-container").css("display","block");
-                s_oMain.stopUpdate();
+                mainInstance().stopUpdate();
             }   
         }
     }
 }
 
 function playSound(szSound,iVolume,bLoop){
-    if(DISABLE_SOUND_MOBILE === false || s_bMobile === false){
+    if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
 
         s_aSounds[szSound].play();
         s_aSounds[szSound].volume(iVolume);
@@ -321,31 +325,31 @@ function playSound(szSound,iVolume,bLoop){
 }
 
 function stopSound(szSound){
-    if(DISABLE_SOUND_MOBILE === false || s_bMobile === false){
+    if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
         s_aSounds[szSound].stop();
     }
 }   
 
 function setVolume(szSound, iVolume){
-    if(DISABLE_SOUND_MOBILE === false || s_bMobile === false){
+    if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
         s_aSounds[szSound].volume(iVolume);
     }
 }  
 
 function setMute(szSound, bMute){
-    if(DISABLE_SOUND_MOBILE === false || s_bMobile === false){
+    if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
         s_aSounds[szSound].mute(bMute);
     }
 }
 
 function createBitmap(oSprite, iWidth, iHeight){
-	var oBmp = new createjs.Bitmap(oSprite);
-	var hitObject = new createjs.Shape();
-	
-	if (iWidth && iHeight){
-		hitObject .graphics.beginFill("#fff").drawRect(0, 0, iWidth, iHeight);
-	}else{
-		hitObject .graphics.beginFill("#ff0").drawRect(0, 0, oSprite.width, oSprite.height);
+	const oBmp = new createjs.Bitmap(oSprite);
+    const hitObject = new createjs.Shape();
+
+	if (iWidth && iHeight) {
+		hitObject.graphics.beginFill("#fff").drawRect(0, 0, iWidth, iHeight);
+	} else {
+		hitObject.graphics.beginFill("#ff0").drawRect(0, 0, oSprite.width, oSprite.height);
 	}
 
 	oBmp.hitArea = hitObject;
@@ -354,9 +358,9 @@ function createBitmap(oSprite, iWidth, iHeight){
 }
 
 function createSprite(oSpriteSheet, szState, iRegX,iRegY,iWidth, iHeight){
-	if(szState !== null){
+	if (szState !== null){
 		var oRetSprite = new createjs.Sprite(oSpriteSheet, szState);
-	}else{
+	} else {
 		var oRetSprite = new createjs.Sprite(oSpriteSheet);
 	}
 	
@@ -453,7 +457,7 @@ function compare(a,b) {
 		 */
 
 function easeLinear (t, b, c, d){
-			return c*t/d + b;
+	return c*t/d + b;
 }
 
 //----------------------
@@ -516,15 +520,15 @@ function formatTime(iTime){
     var szRet = "";
 
     if ( iMins < 10 ){
-            szRet += "0" + iMins + ":";
-    }else{
-            szRet += iMins + ":";
+        szRet += "0" + iMins + ":";
+    } else {
+        szRet += iMins + ":";
     }
 
     if ( iSecs < 10 ){
-            szRet += "0" + iSecs;
-    }else{
-            szRet += iSecs;
+        szRet += "0" + iSecs;
+    } else {
+        szRet += iSecs;
     }	
 
     return szRet;
@@ -727,23 +731,23 @@ onTouchEnd: function(e) {
             document.body.className = this[hidden] ? "hidden" : "visible";
 
 			if(document.body.className === "hidden"){
-				s_oMain.stopUpdate();
+				mainInstance().stopUpdate();
 			}else{
-				s_oMain.startUpdate();
+				mainInstance().startUpdate();
 			}
 		}
     }
 })();
 
 function ctlArcadeResume(){
-    if(s_oMain !== null){
-        s_oMain.startUpdate();
+    if(mainInstance() !== null){
+        mainInstance().startUpdate();
     }
 }
 
 function ctlArcadePause(){
-    if(s_oMain !== null){
-        s_oMain.stopUpdate();
+    if(mainInstance() !== null){
+        mainInstance().stopUpdate();
     }
 }
 
@@ -763,7 +767,7 @@ function getParamValue(paramName){
 function fullscreenHandler(){
     const screen = window.screen;
 
-    if (!ENABLE_FULLSCREEN || !screenfull.enabled){
+    if (!settings.ENABLE_FULLSCREEN || !screenfull.enabled){
        return;
     }
 	
@@ -773,8 +777,8 @@ function fullscreenHandler(){
         s_bFullscreen = false;
     }
 
-    if (s_oInterface !== null){
-        s_oInterface.resetFullscreenBut();
+    if (interfaceInstance !== null){
+        interfaceInstance.resetFullscreenBut();
     }
 
     if (s_oMenu !== null){
@@ -788,8 +792,8 @@ if (screenfull.enabled) {
     screenfull.on('change', function(){
             s_bFullscreen = screenfull.isFullscreen;
 
-            if (s_oInterface !== null){
-                s_oInterface.resetFullscreenBut();
+            if (interfaceInstance !== null){
+                interfaceInstance.resetFullscreenBut();
             }
 
             if (s_oMenu !== null){

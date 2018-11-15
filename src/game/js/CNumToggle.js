@@ -5,11 +5,8 @@ import {
     s_iScaleFactor
 } from './ctl_utils.js'
 
-import {
-    ON_MOUSE_UP,
-    ON_MOUSE_DOWN,
-    NUM_DIFFERENT_BALLS
-} from './settings.js'
+import settings from './settings.js'
+
 import CSpriteLibrary from './sprite_lib'
 // import CMain from './CMain.js'
 // import {
@@ -62,13 +59,13 @@ function CNumToggle(iXPos,iYPos, iNum, oParentContainer){
         var oData = {   
                         images: [oSprite], 
                         // width, height & registration point of each sprite
-                        frames: {width: oSprite.width/NUM_DIFFERENT_BALLS, height: oSprite.height, regX:(oSprite.width/NUM_DIFFERENT_BALLS)/2, regY:oSprite.height/2}, 
+                        frames: {width: oSprite.width/settings.NUM_DIFFERENT_BALLS, height: oSprite.height, regX:(oSprite.width/settings.NUM_DIFFERENT_BALLS)/2, regY:oSprite.height/2}, 
                         animations: {red:[0],green:[1],cyan:[0],violet:[1],blue:[1]}
                    };
                    
         var oSpriteSheet = new createjs.SpriteSheet(oData);
         
-        _oExtracted = createSprite(oSpriteSheet, "red",(oSprite.width/NUM_DIFFERENT_BALLS)/2,oSprite.height/2,oSprite.width/NUM_DIFFERENT_BALLS,oSprite.height);//new createBitmap(oSprite);
+        _oExtracted = createSprite(oSpriteSheet, "red",(oSprite.width/settings.NUM_DIFFERENT_BALLS)/2,oSprite.height/2,oSprite.width/settings.NUM_DIFFERENT_BALLS,oSprite.height);//new createBitmap(oSprite);
         _oExtracted.gotoAndStop(0);
         _oExtracted.visible = false;
 
@@ -117,8 +114,8 @@ function CNumToggle(iXPos,iYPos, iNum, oParentContainer){
         _bActive = !_bActive;
         _oButtonBg.gotoAndStop("state_"+_bActive);
 
-        if(_aCbCompleted[ON_MOUSE_UP]){
-            _aCbCompleted[ON_MOUSE_UP].call(_aCbOwner[ON_MOUSE_UP],_aParams);
+        if(_aCbCompleted[settings.ON_MOUSE_UP]){
+            _aCbCompleted[settings.ON_MOUSE_UP].call(_aCbOwner[settings.ON_MOUSE_UP],_aParams);
         }
     };
     
@@ -127,8 +124,8 @@ function CNumToggle(iXPos,iYPos, iNum, oParentContainer){
             return;
         }
 
-       if(_aCbCompleted[ON_MOUSE_DOWN]){
-           _aCbCompleted[ON_MOUSE_DOWN].call(_aCbOwner[ON_MOUSE_DOWN],_aParams);
+       if(_aCbCompleted[settings.ON_MOUSE_DOWN]){
+           _aCbCompleted[settings.ON_MOUSE_DOWN].call(_aCbOwner[settings.ON_MOUSE_DOWN],_aParams);
        }
     };
     

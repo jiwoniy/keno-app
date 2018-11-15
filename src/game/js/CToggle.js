@@ -3,10 +3,11 @@ import {
     playSound,
     createSprite
 } from './ctl_utils.js'
-import {
-    ON_MOUSE_DOWN,
-    ON_MOUSE_UP,
-} from './settings.js'
+// import {
+//     ON_MOUSE_DOWN,
+//     ON_MOUSE_UP,
+// } from './settings.js'
+import settings from './settings.js'
 import {
     s_oStage,
 } from './CMain.js'
@@ -75,8 +76,8 @@ function CToggle(iXPos,iYPos,oSprite,bActive){
         _bActive = !_bActive;
         _oButton.gotoAndStop("state_"+_bActive);
 
-        if(_aCbCompleted[ON_MOUSE_UP]){
-            _aCbCompleted[ON_MOUSE_UP].call(_aCbOwner[ON_MOUSE_UP],_bActive);
+        if(_aCbCompleted[settings.ON_MOUSE_UP]){
+            _aCbCompleted[settings.ON_MOUSE_UP].call(_aCbOwner[settings.ON_MOUSE_UP],_bActive);
         }
     };
     
@@ -84,8 +85,8 @@ function CToggle(iXPos,iYPos,oSprite,bActive){
         _oButton.scaleX = 0.9;
         _oButton.scaleY = 0.9;
 
-       if(_aCbCompleted[ON_MOUSE_DOWN]){
-           _aCbCompleted[ON_MOUSE_DOWN].call(_aCbOwner[ON_MOUSE_DOWN]);
+       if(_aCbCompleted[settings.ON_MOUSE_DOWN]){
+           _aCbCompleted[settings.ON_MOUSE_DOWN].call(_aCbOwner[settings.ON_MOUSE_DOWN]);
        }
     };
     

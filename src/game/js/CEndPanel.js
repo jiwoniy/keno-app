@@ -1,21 +1,23 @@
 import $ from 'jquery'
 import createjs from './createjs.js'
 import {
-    s_oMain,
+    mainInstance,
+    // s_oMain,
     s_oStage,
 } from './CMain.js'
 import {
-    s_oGame,
+    gameInstance,
 } from './CGame.js'
 import {
     createBitmap,
     playSound
 } from './ctl_utils.js'
-import {
-    PRIMARY_FONT,
-    CANVAS_WIDTH,
-    CANVAS_HEIGHT,
-} from './settings.js'
+// import {
+//     PRIMARY_FONT,
+//     CANVAS_WIDTH,
+//     CANVAS_HEIGHT,
+// } from './settings.js'
+import settings from './settings.js'
 import {
     TEXT_GAMEOVER,
 } from './CLang.js'
@@ -35,16 +37,16 @@ function CEndPanel(oSpriteBg){
         _oBg.x = 0;
         _oBg.y = 0;
         
-	_oMsgTextBack = new createjs.Text("","60px "+PRIMARY_FONT, "#000");
-        _oMsgTextBack.x = CANVAS_WIDTH/2 +2;
-        _oMsgTextBack.y = (CANVAS_HEIGHT/2)-48;
+	_oMsgTextBack = new createjs.Text("","60px "+settings.PRIMARY_FONT, "#000");
+        _oMsgTextBack.x = settings.CANVAS_WIDTH/2 +2;
+        _oMsgTextBack.y = (settings.CANVAS_HEIGHT/2)-48;
         _oMsgTextBack.textAlign = "center";
         _oMsgTextBack.textBaseline = "middle";
         _oMsgTextBack.lineWidth = 500;
 
-        _oMsgText = new createjs.Text("","60px "+PRIMARY_FONT, "#ffffff");
-        _oMsgText.x = CANVAS_WIDTH/2;
-        _oMsgText.y = (CANVAS_HEIGHT/2) - 50;
+        _oMsgText = new createjs.Text("","60px "+settings.PRIMARY_FONT, "#ffffff");
+        _oMsgText.x = settings.CANVAS_WIDTH/2;
+        _oMsgText.y = (settings.CANVAS_HEIGHT/2) - 50;
         _oMsgText.textAlign = "center";
         _oMsgText.textBaseline = "middle";
         _oMsgText.lineWidth = 500;       
@@ -83,9 +85,9 @@ function CEndPanel(oSpriteBg){
         _oGroup.off("mousedown",_oListener);
         s_oStage.removeChild(_oGroup);
         
-        $(s_oMain).trigger("end_session");
+        $(mainInstance).trigger("end_session");
         
-        s_oGame.onExit();
+        gameInstance().onExit();
     };
     
     this._init(oSpriteBg);

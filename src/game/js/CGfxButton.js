@@ -2,10 +2,11 @@ import {
     s_oStage,
 } from './CMain.js'
 
-import {
-    ON_MOUSE_UP,
-    ON_MOUSE_DOWN,
-} from './settings.js'
+// import {
+//     ON_MOUSE_UP,
+//     ON_MOUSE_DOWN,
+// } from './settings.js'
+import settings from './settings.js'
 
 import {
     createBitmap,
@@ -65,8 +66,8 @@ function CGfxButton(iXPos,iYPos,oSprite){
         
         playSound("click",1,false);
         
-        if(_aCbCompleted[ON_MOUSE_UP]){
-            _aCbCompleted[ON_MOUSE_UP].call(_aCbOwner[ON_MOUSE_UP]);
+        if(_aCbCompleted[settings.ON_MOUSE_UP]){
+            _aCbCompleted[settings.ON_MOUSE_UP].call(_aCbOwner[settings.ON_MOUSE_UP]);
         }
     };
     
@@ -74,8 +75,8 @@ function CGfxButton(iXPos,iYPos,oSprite){
         _oButton.scaleX = 0.9;
         _oButton.scaleY = 0.9;
 
-       if(_aCbCompleted[ON_MOUSE_DOWN]){
-           _aCbCompleted[ON_MOUSE_DOWN].call(_aCbOwner[ON_MOUSE_DOWN]);
+       if(_aCbCompleted[settings.ON_MOUSE_DOWN]){
+           _aCbCompleted[settings.ON_MOUSE_DOWN].call(_aCbOwner[settings.ON_MOUSE_DOWN]);
        }
     };
     
