@@ -13,9 +13,6 @@ function CSpriteLibrary() {
     var _cbOwner;
     
     this.init = function(cbCompleted, cbTotalCompleted, cbOwner) {
-        // console.log(cbCompleted)
-        // console.log(cbTotalCompleted)
-        // console.log(cbOwner)
         // _iNumSprites = 0;
         // _iCntSprites = 0;
         _cbCompleted = cbCompleted;

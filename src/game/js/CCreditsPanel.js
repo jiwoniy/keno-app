@@ -15,78 +15,81 @@ import {
 
 function CCreditsPanel(){
     
-    var _oBg;
-    var _oButLogo;
-    var _oButExit;
-    var _oMsgText;
+    // var _oBg;
+    // var _oButLogo;
+    // var _oButExit;
+    // var _oMsgText;
     
-    var _oHitArea;
+    // var _oHitArea;
     
-    var _oLink;
-    var _oListener;
+    // var _oLink;
+    // var _oListener;
     
-    var _pStartPosExit;
+    // var _pStartPosExit;
     
-    var _oContainer;
+    // var _oContainer;
+    this.state = {
+        container: null,
+        exitButton: null,
+        hitArea: null,
+        listener: null
+    }
     
-    this._init = function(){
-        _oContainer = new createjs.Container();
-        mainInstance().getStage().addChild(_oContainer);
+    this.initCreditsPanel = () => {
+        this.state.container = new createjs.Container();
+        mainInstance().getStage().addChild(this.state.container);
         
-        _oBg = createBitmap(CSpriteLibrary.getSprite('msg_box'));
-        _oContainer.addChild(_oBg);
+        // _oBg = createBitmap(CSpriteLibrary.getSprite('msg_box'));
+        this.state.container.addChild(createBitmap(CSpriteLibrary.getSprite('msg_box')));
         
-        _oHitArea = new createjs.Shape();
-        _oHitArea.graphics.beginFill("#0f0f0f").drawRect(0, 0, settings.CANVAS_WIDTH, settings.CANVAS_HEIGHT);
-        _oHitArea.alpha = 0.01;
-        _oListener = _oHitArea.on("click", this._onLogoButRelease);
-        _oContainer.addChild(_oHitArea);
+        this.state.hitArea = new createjs.Shape();
+        this.state.hitArea.graphics.beginFill("#0f0f0f").drawRect(0, 0, settings.CANVAS_WIDTH, settings.CANVAS_HEIGHT);
+        this.state.hitArea.alpha = 0.01;
+        this.state.listener = this.state.hitArea.on("click", this._onLogoButRelease);
+        this.state.container.addChild(this.state.hitArea);
                 
-        var oSprite = CSpriteLibrary.getSprite('but_exit');
-        _pStartPosExit = {x: 1230 , y: 340};
-        _oButExit = new CGfxButton(_pStartPosExit.x, _pStartPosExit.y, oSprite, _oContainer);
-        _oButExit.addEventListener(settings.ON_MOUSE_UP, this.unload, this);
+        const butExitSprite = CSpriteLibrary.getSprite('but_exit');
+        const startExitPosition  = { x: 1230 , y: 340 };
+        this.state.exitButton = new CGfxButton(startExitPosition.x, startExitPosition.y, butExitSprite, this.state.container);
+        this.state.exitButton.addEventListener(settings.ON_MOUSE_UP, this.unload, this);
        
-        _oMsgText = new createjs.Text(TEXT_CREDITS_DEVELOPED, "40px " + settings.SECONDARY_FONT, "#fff");
+        const _oMsgText = new createjs.Text(TEXT_CREDITS_DEVELOPED, "40px " + settings.SECONDARY_FONT, "#fff");
         _oMsgText.textAlign = "center";
         _oMsgText.textBaseline = "alphabetic";
-	_oMsgText.x = settings.CANVAS_WIDTH/2;
+	    _oMsgText.x = settings.CANVAS_WIDTH/2;
         _oMsgText.y = settings.CANVAS_HEIGHT/2 - 54;
-	_oContainer.addChild(_oMsgText);
+	    this.state.container.addChild(_oMsgText);
 		
-        oSprite = CSpriteLibrary.getSprite('ctl_logo');
-        _oButLogo = createBitmap(oSprite);
-        _oButLogo.regX = oSprite.width/2;
-        _oButLogo.regY = oSprite.height/2;
-        _oButLogo.x = settings.CANVAS_WIDTH/2;
-        _oButLogo.y = settings.CANVAS_HEIGHT/2;
-        _oContainer.addChild(_oButLogo);
+        const ctlLogoSprite = CSpriteLibrary.getSprite('ctl_logo');
+        const _oButLogo = createBitmap(ctlLogoSprite);
+        _oButLogo.regX = ctlLogoSprite.width / 2;
+        _oButLogo.regY = ctlLogoSprite.height / 2;
+        _oButLogo.x = settings.CANVAS_WIDTH / 2;
+        _oButLogo.y = settings.CANVAS_HEIGHT / 2;
+        this.state.container.addChild(_oButLogo);
         
-        _oLink = new createjs.Text("www.ecoblock.com", "36px " + settings.SECONDARY_FONT, "#fff");
+        const _oLink = new createjs.Text("www.ecoblock.com", "36px " + settings.SECONDARY_FONT, "#fff");
         _oLink.textAlign = "center";
         _oLink.textBaseline = "alphabetic";
-	_oLink.x = settings.CANVAS_WIDTH/2;
-        _oLink.y = settings.CANVAS_HEIGHT/2 + 70;
-        _oContainer.addChild(_oLink);
+	    _oLink.x = settings.CANVAS_WIDTH / 2;
+        _oLink.y = (settings.CANVAS_HEIGHT / 2) + 70;
+        this.state.container.addChild(_oLink);
     };
 
     
-    this.unload = function(){
-        _oHitArea.off("click", _oListener);
-        
-        _oButExit.unload(); 
-        _oButExit = null;
+    this.unload = () => {
+        this.state.hitArea.off("click", this.state.listener);
+        this.state.exitButton.unload(); 
+        this.state.exitButton = null;
 
-        mainInstance().getStage().removeChild(_oContainer);
+        mainInstance().getStage().removeChild(this.state.container);
     };
     
-    this._onLogoButRelease = function(){
+    this._onLogoButRelease = () => {
         window.open("http://www.ecoblock.com/index.php?&l=en","_blank");
     };
     
-    this._init();
-    
-    
+    this.initCreditsPanel();
 };
 
 export default CCreditsPanel;
