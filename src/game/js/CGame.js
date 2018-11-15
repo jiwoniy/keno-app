@@ -24,8 +24,6 @@ function CGame(oData) {
         payOuts: settings.getPayOuts() || []
     }
 
-    // var _bTouchActive;
-    // var _bInitGame;
     var _bWin;
 
     var _iBank;
@@ -49,7 +47,7 @@ function CGame(oData) {
     var _oAnimBalls;
     var _oBlockScreen;
     
-    this.initCGame = function() {
+    this.initCGame = () => {
         // _bTouchActive = false;
         // _bInitGame = true;
         
@@ -98,15 +96,14 @@ function CGame(oData) {
         _oBlockScreen.visible = false;
         mainInstance().getStage().addChild(_oBlockScreen);
 
-		if(_iCurBet>_iCurPlayerMoney){
-                for(var i=0; i<80; i++){
-					_aCell[i].block(true);
-				}
+		if(_iCurBet > _iCurPlayerMoney) {
+            for(var i=0; i<80; i++){
+                _aCell[i].block(true);
+            }
         }
     };
     
-    this._initCells = function() {
-      
+    this._initCells = () => {
         const numButtonSprite = CSpriteLibrary.getSprite('num_button');
         var iCellWidth = (numButtonSprite.width / 2) - 5;
         var iCellHeight = numButtonSprite.height - 5;
@@ -138,53 +135,51 @@ function CGame(oData) {
 
     };
     
-    this._onButNumRelease = function(iNum){
-
+    this._onButNumRelease = (iNum) => {
         this._clearAllSelected();
 
         if(_aNumSelected[iNum]){
             _iTotalNum--;
             _aNumSelected[iNum] = false;
-            for(var i=0; i<_aListSelected.length; i++){
+            for(let i = 0; i < _aListSelected.length; i += 1){
                 if(_aListSelected[i] === iNum){
                     _aListSelected.splice(i,1);
                 }
             }            
         }else {
-            _iTotalNum++;
+            _iTotalNum += 1;
             _aNumSelected[iNum] = true;
             _aListSelected.push(iNum);
         }
         
-        for(let i=0; i<_aListSelected.length; i++){
+        for(let i = 0; i < _aListSelected.length; i += 1){
             _aCell[_aListSelected[i]].setActive(true);
         }
         
         this._checkActiveButton();
-
         _oPayoutsTable.updatePayouts(_iTotalNum-1);
         
-        if(_iTotalNum > 9){
-            for(let i=0; i<_aNumSelected.length; i++){
-                if(!_aNumSelected[i]){
+        if(_iTotalNum > 9) {
+            for(let i=0; i<_aNumSelected.length; i += 1) {
+                if(!_aNumSelected[i]) {
                     _aCell[i].block(true);
                 }
             }
         } else {
-            for(let i=0; i<_aNumSelected.length; i++){
-                    _aCell[i].block(false);
+            for(let i=0; i<_aNumSelected.length; i += 1) {
+                _aCell[i].block(false);
             }
         }        
     };
    
     this._checkActiveButton = function(){
-        if(_iTotalNum<2){
+        if (_iTotalNum<2) {
             _oInterface.enablePlay1(false);
             _oInterface.enablePlay5(false);
             
         } else {
             _oInterface.enablePlay1(true);
-            if(_iCurBet * 5 > _iCurPlayerMoney){
+            if (_iCurBet * 5 > _iCurPlayerMoney) {
                 _oInterface.enablePlay5(false);
             } else {
                 _oInterface.enablePlay5(true);
@@ -201,7 +196,7 @@ function CGame(oData) {
         _iTotalNum = 0;
         _oPayoutsTable.updatePayouts(_iTotalNum-1);
         
-        for(var i=0; i<_aNumSelected.length; i++){
+        for(let i = 0; i < _aNumSelected.length; i += 1) {
             _aNumSelected[i] = false;
             _aCell[i].block(false);
             _aCell[i].setActive(false);
