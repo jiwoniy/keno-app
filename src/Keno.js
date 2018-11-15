@@ -82,9 +82,9 @@ class Keno extends Component {
       });
 
       $(oMain).on("bet_placed", function (evt, oBetInfo) {
-        var iTotBet = oBetInfo.tot_bet;
-        var iMoney = oBetInfo.money;
-        var iNumSelected = oBetInfo.num_selected;
+        // var iTotBet = oBetInfo.tot_bet;
+        // var iMoney = oBetInfo.money;
+        // var iNumSelected = oBetInfo.num_selected;
       });
 
       $(oMain).on("save_score", function(evt,iScore) {

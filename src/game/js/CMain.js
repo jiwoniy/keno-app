@@ -1,48 +1,41 @@
 import $ from 'jquery'
 import { Howl, Howler } from 'howler';
 
-import CMenu from './CMenu.js'
-import CGame from './CGame.js'
+import './detectBrowser.js'
 import createjs from './createjs.js'
-import CSpriteLibrary from './sprite_lib'
+import CSpriteLibrary from './sprite_lib.js'
 import CPreloader from './CPreloader.js'
 
-import {
-    playSound
-} from './ctl_utils.js'
-// import {
-//     STATE_MENU,
-//     // STATE_HELP,
-//     STATE_GAME,
-//     STATE_LOADING,
-//     DISABLE_SOUND_MOBILE,
-//     // ENABLE_CHECK_ORIENTATION,
-//     // ENABLE_FULLSCREEN,
-//     // SHOW_CREDITS,
-// } from './settings.js'
+import { playSound } from './ctl_utils.js'
 import settings from './settings.js'
+import CMenu from './CMenu.js'
+import CGame from './CGame.js'
 
 function CMain (oData) {
-
     var _bUpdate;
     let soundsLoadedCnt = 0;
     let imagesLoadedCnt = 0;
-    let loadResources = 0;
     var _iState = settings.STATE_LOADING;
     // var _oData;
     
     var _oPreloader;
     // var _oMenu;
-    var _oHelp;
+    // var _oHelp;
     // var _oGame;
 
     // state
     this.state = {
         initData: oData || {},
+        loadResources: 0,
         audioActive: true,
+        fullScreen: false,
         menu: null,
         game: null
     }
+
+    this.s_iCurFps = 0
+
+    // variables that can not be accurately grasp
         
     // _oData = oData;
 
@@ -59,7 +52,7 @@ function CMain (oData) {
 		
         s_iPrevTime = new Date().getTime();
 
-        createjs.Ticker.addEventListener("tick", this._update);
+        createjs.Ticker.addEventListener("tick", this.ticker);
         createjs.Ticker.framerate = 30;
         
         if(navigator.userAgent.match(/Windows Phone/i)){
@@ -83,8 +76,8 @@ function CMain (oData) {
     
     this._onRemovePreloader = function(){
         _oPreloader.unload();
-        
-        s_oSoundTrack = playSound("soundtrack", 1, true);
+        playSound('soundtrack', 1, true);
+        // s_oSoundTrack = playSound('soundtrack', 1, true);
         
         this.gotoMenu();
     };
@@ -107,10 +100,10 @@ function CMain (oData) {
             path: './sounds/',filename:'soundtrack',loop:true,volume:1, ingamename: 'soundtrack'
         });
         
-        loadResources += aSoundsInfo.length;
-
+        this.state.loadResources += aSoundsInfo.length;
         s_aSounds = [];
-        for(let i=0; i<aSoundsInfo.length; i++) {
+
+        for(let i = 0; i < aSoundsInfo.length; i += 1) {
             s_aSounds[aSoundsInfo[i].ingamename] = new Howl({ 
                 src: [aSoundsInfo[i].path+aSoundsInfo[i].filename+'.mp3', aSoundsInfo[i].path+aSoundsInfo[i].filename+'.ogg'],
                 autoplay: false,
@@ -150,7 +143,7 @@ function CMain (oData) {
         CSpriteLibrary.addSprite("but_info", "./sprites/but_info.png");
         CSpriteLibrary.addSprite("ctl_logo", "./sprites/ctl_logo.png");
         
-        loadResources += CSpriteLibrary.getNumSprites();
+        this.state.loadResources += CSpriteLibrary.getNumSprites();
         CSpriteLibrary.loadSprites();
     };
 
@@ -168,17 +161,11 @@ function CMain (oData) {
     };
 
     this.gotoMenu = function() {
-        console.log('-------go to menu ----------')
-        // console.log(this.state.menu)
-        // if (!this.state.menu) {
-        //     this.state.menu = CMenu(true);
-        // }
         this.state.menu = CMenu(true);
         _iState = settings.STATE_MENU;
     };
 
     this.gotoGame = function() {
-        console.log('-------go to game----------')
         this.state.game = new CGame(true, this.state.initData);   						
         _iState = settings.STATE_GAME;
 
@@ -191,6 +178,14 @@ function CMain (oData) {
 
     this.setAudioActive = function (value) {
         this.state.audioActive = value
+    }
+
+    this.getFullscreen = function () {
+        return this.state.fullScreen
+    }
+
+    this.setFullScreen = function (value) {
+        this.state.fullScreen = value
     }
     
     // this.gotoHelp = function(){
@@ -223,18 +218,18 @@ function CMain (oData) {
         
     };
     
-    this._update = (event) => {
+    this.ticker = (event) => {
         if(_bUpdate === false) {
              return;
         }
-        var iCurTime = new Date().getTime();
+        const iCurTime = new Date().getTime();
         s_iTimeElaps = iCurTime - s_iPrevTime;
         s_iCntTime += s_iTimeElaps;
         s_iCntFps++;
         s_iPrevTime = iCurTime;
         
         if ( s_iCntTime >= 1000 ){
-            s_iCurFps = s_iCntFps;
+            this.s_iCurFps = s_iCntFps;
             s_iCntTime-=1000;
             s_iCntFps = 0;
         }
@@ -261,17 +256,17 @@ var s_iCntTime = 0;
 var s_iTimeElaps = 0;
 var s_iPrevTime = 0;
 var s_iCntFps = 0;
-var s_iCurFps = 0;
+// var s_iCurFps = 0;
 
-var s_oDrawLayer;
+// var s_oDrawLayer;
 var s_oStage;
 // var s_oMain;
 // var s_oSpriteLibrary;
-var s_oSoundTrack = null;
+// var s_oSoundTrack = null;
 var s_oCanvas;
 var s_aSounds;
 
-var s_bFullscreen = false;
+// var s_bFullscreen = false;
 
 const Singleton = (() => {
     let instance = null;
@@ -299,36 +294,5 @@ export {
     // s_oMain,
     s_aSounds,
     // s_oSpriteLibrary,
-    s_bFullscreen,
+    // s_bFullscreen,
 } 
-
-// const Singleton = (() => {
-//     let instance;
-//     function createInstance() {
-//         return new CInterface();
-//     }
-  
-//     return {
-//       getInstance: () => {
-//           console.log(!mainInterface)
-//         if (!mainInterface) {
-//             return null
-//         } else if (mainInterface && !instance) {
-//             console.log(mainInterface)
-//             console.log('---create--')
-//             // This logic shoud be run after CGMain logic
-//           instance = createInstance();
-//           return instance;
-//         } else {
-//             return instance;
-//         }
-//       },
-//     };
-// })();
-// const interfaceInstance = Singleton.getInstance()
-
-// // export default CInterface;
-// export default Singleton.getInstance;
-// export {
-//     interfaceInstance
-// }

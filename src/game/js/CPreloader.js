@@ -62,16 +62,16 @@ function CPreloader ({ mainInstance }) {
     };
 
     this.attachSprites = function () {
-        var oBg = new createjs.Shape();
+        const oBg = new createjs.Shape();
         oBg.graphics.beginFill("black").drawRect(0, 0, settings.CANVAS_WIDTH, settings.CANVAS_HEIGHT);
         _oContainer.addChild(oBg);
 
-        var oSprite = CSpriteLibrary.getSprite('200x200');
-        _oIcon = createBitmap(oSprite);
-        _oIcon.regX = oSprite.width * 0.5;
-        _oIcon.regY = oSprite.height * 0.5;
-        _oIcon.x = settings.CANVAS_WIDTH/2;
-        _oIcon.y = settings.CANVAS_HEIGHT/2 - 180;
+        const backgroundSprite = CSpriteLibrary.getSprite('200x200');
+        _oIcon = createBitmap(backgroundSprite);
+        _oIcon.regX = backgroundSprite.width * 0.5;
+        _oIcon.regY = backgroundSprite.height * 0.5;
+        _oIcon.x = settings.CANVAS_WIDTH / 2;
+        _oIcon.y = (settings.CANVAS_HEIGHT / 2) - 180;
         _oContainer.addChild(_oIcon);
 
         _oIconMask = new createjs.Shape();
@@ -80,14 +80,14 @@ function CPreloader ({ mainInstance }) {
         
         _oIcon.mask = _oIconMask;
 
-        var oSprite = CSpriteLibrary.getSprite('progress_bar');
-        _oProgressBar = createBitmap(oSprite);
-        _oProgressBar.x = settings.CANVAS_WIDTH/2 - (oSprite.width / 2);
+        const progressBarSprite = CSpriteLibrary.getSprite('progress_bar');
+        _oProgressBar = createBitmap(progressBarSprite);
+        _oProgressBar.x = settings.CANVAS_WIDTH/2 - (progressBarSprite.width / 2);
         _oProgressBar.y = settings.CANVAS_HEIGHT/2 + 50;
         _oContainer.addChild(_oProgressBar);
 
-        _iMaskWidth = oSprite.width;
-        _iMaskHeight = oSprite.height;
+        _iMaskWidth = progressBarSprite.width;
+        _iMaskHeight = progressBarSprite.height;
         _oMaskPreloader = new createjs.Shape();
         _oMaskPreloader.graphics.beginFill("rgba(0,0,0,0.01)").drawRect(_oProgressBar.x, _oProgressBar.y, 1, _iMaskHeight);
 
@@ -102,8 +102,8 @@ function CPreloader ({ mainInstance }) {
         _oLoadingText.textAlign = "center";
         _oContainer.addChild(_oLoadingText);
         
-        var oSprite = CSpriteLibrary.getSprite('but_start');
-        _oButStart = new CTextButton(settings.CANVAS_WIDTH/2, settings.CANVAS_HEIGHT/2, oSprite, TEXT_PRELOADER_CONTINUE, "Arial", "#000", "bold "+ 50, _oContainer);        
+        const butStartSprite = CSpriteLibrary.getSprite('but_start');
+        _oButStart = new CTextButton(settings.CANVAS_WIDTH / 2, settings.CANVAS_HEIGHT / 2, butStartSprite, TEXT_PRELOADER_CONTINUE, 'Arial', '#000', "bold "+ 50, _oContainer);        
         _oButStart.addEventListener(settings.ON_MOUSE_UP, this._onButStartRelease, this);
         _oButStart.setVisible(false);
         

@@ -5,11 +5,9 @@ import {
     shuffle,
     playSound
 } from './ctl_utils.js'
-// import CMain from './CMain.js'
 import CSpriteLibrary from './sprite_lib'
 import {
     mainInstance,
-    // s_oMain,
     s_oStage,
 } from './CMain.js'
 
@@ -26,8 +24,8 @@ function CGame(oData) {
         payOuts: settings.getPayOuts() || []
     }
 
-    var _bTouchActive;
-    var _bInitGame;
+    // var _bTouchActive;
+    // var _bInitGame;
     var _bWin;
 
     var _iBank;
@@ -52,9 +50,8 @@ function CGame(oData) {
     var _oBlockScreen;
     
     this.initCGame = function() {
-        
-        _bTouchActive=false;
-        _bInitGame=true;
+        // _bTouchActive = false;
+        // _bInitGame = true;
         
         _iBank = settings.BANK;
         _iCurPlayerMoney = settings.START_PLAYER_MONEY;
@@ -65,8 +62,8 @@ function CGame(oData) {
         
         _aListSelected = [];
         
-        var oBg = createBitmap(CSpriteLibrary.getSprite('bg_game'));
-        s_oStage.addChild(oBg); 
+        // var oBg = createBitmap(CSpriteLibrary.getSprite('bg_game'));
+        s_oStage.addChild(createBitmap(CSpriteLibrary.getSprite('bg_game'))); 
         _oInterface = new CInterface(true);
         _oInterface.refreshBet(_iCurBet);           
  
@@ -79,18 +76,18 @@ function CGame(oData) {
 
         _oPayoutsTable = new CPayouts(1360,203);
 
-        var oSprite = CSpriteLibrary.getSprite('hole');
-        var oHole = createBitmap(oSprite);
-        oHole.regX = oSprite.width/2;
-        oHole.regY = oSprite.height/2;
+        const holeSprite = CSpriteLibrary.getSprite('hole');
+        var oHole = createBitmap(holeSprite);
+        oHole.regX = holeSprite.width / 2;
+        oHole.regY = holeSprite.height / 2;
         oHole.x = 365;
         oHole.y = 750;
         s_oStage.addChild(oHole);
 
         _oAnimBalls = new CAnimBalls(365, 260);
         
-        var oSprite = CSpriteLibrary.getSprite('tube');
-        var oTube = createBitmap(oSprite);
+        // var oSprite = CSpriteLibrary.getSprite('tube');
+        const oTube = createBitmap(CSpriteLibrary.getSprite('tube'));
         oTube.x = 315;
         oTube.y = 205;
         s_oStage.addChild(oTube);
@@ -108,18 +105,16 @@ function CGame(oData) {
         }
     };
     
-    this._initCells = function(){
+    this._initCells = function() {
       
-        var oSprite = CSpriteLibrary.getSprite('num_button');
-        var iCellWidth = oSprite.width/2 -5;
-        var iCellHeight = oSprite.height - 5;
+        const numButtonSprite = CSpriteLibrary.getSprite('num_button');
+        var iCellWidth = (numButtonSprite.width / 2) - 5;
+        var iCellHeight = numButtonSprite.height - 5;
         
         var iNumRow = 8;
         var iNumCol = 10;
         
-        var oStartPos = {x: -(iNumCol*iCellWidth)/2 + iCellWidth/2 - 40, y: -(iNumRow*iCellHeight)/2 + iCellHeight/2 + 10};
-     
-        
+        var oStartPos = {x: - (iNumCol * iCellWidth) / 2 + (iCellWidth / 2) - 40, y: -(iNumRow * iCellHeight) / 2 + (iCellHeight / 2) + 10};
      
         _aCell = [];
         _aNumSelected = [];
@@ -127,18 +122,18 @@ function CGame(oData) {
         for(var i=0; i<80; i++){
             _aCell[i] = new CNumToggle(oStartPos.x +(i%iNumCol)*iCellWidth, oStartPos.y + iCellHeight*iNewHeight, i+1, _oCellContainer);
             _aCell[i].addEventListenerWithParams(settings.ON_MOUSE_UP, this._onButNumRelease, this, i);
-            if(i%iNumCol === iNumCol-1){
+            if(i % iNumCol === iNumCol - 1) {
                 iNewHeight++;
             }            
             _aNumSelected[i] = false;
         }
 
-        var oSprite = CSpriteLibrary.getSprite('number')
-        var oNumber = createBitmap(oSprite);
-        oNumber.regX = oSprite.width/2;
-        oNumber.regY = oSprite.height/2;
-        oNumber.x = settings.CANVAS_WIDTH/2 -35;
-        oNumber.y = settings.CANVAS_HEIGHT/2 + 10;
+        const numberSprite = CSpriteLibrary.getSprite('number')
+        const oNumber = createBitmap(numberSprite);
+        oNumber.regX = numberSprite.width / 2;
+        oNumber.regY = numberSprite.height / 2;
+        oNumber.x = (settings.CANVAS_WIDTH / 2) - 35;
+        oNumber.y = (settings.CANVAS_HEIGHT / 2) + 10;
         s_oStage.addChild(oNumber);
 
     };
@@ -524,8 +519,7 @@ function CGame(oData) {
        
     
     this.unload = function(){
-        _bInitGame = false;
-        
+        // _bInitGame = false;
         _oInterface.unload();
         if(_oEndPanel !== null){
             _oEndPanel.unload();

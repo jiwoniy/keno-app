@@ -21,7 +21,7 @@ import {
     s_bMobile,
     s_oStage,
     // s_oSpriteLibrary,
-    s_bFullscreen,
+    // s_bFullscreen,
 } from './CMain.js'
 // import {
 //     CANVAS_WIDTH,
@@ -51,26 +51,26 @@ function CMenu() {
         _oBg = createBitmap(CSpriteLibrary.getSprite('bg_menu'));
         s_oStage.addChild(_oBg);
 
-        var oSprite = CSpriteLibrary.getSprite('but_play');
-        _oButPlay = new CGfxButton((settings.CANVAS_WIDTH/2),settings.CANVAS_HEIGHT -200,oSprite);
+        const butPlaySprite = CSpriteLibrary.getSprite('but_play');
+        _oButPlay = new CGfxButton((settings.CANVAS_WIDTH / 2), settings.CANVAS_HEIGHT -200, butPlaySprite);
         _oButPlay.addEventListener(settings.ON_MOUSE_UP, this._onButPlayRelease, this);
     
         if (settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
-            var oSprite = CSpriteLibrary.getSprite('audio_icon');
-            _pStartPosAudio = {x: settings.CANVAS_WIDTH - (oSprite.height/2)- 10, y: (oSprite.height/2) + 10};            
-            _oAudioToggle = new CToggle(_pStartPosAudio.x,_pStartPosAudio.y,oSprite, mainInstance().getAudioActive());
+            const audioIconSprite = CSpriteLibrary.getSprite('audio_icon');
+            _pStartPosAudio = {x: settings.CANVAS_WIDTH - (audioIconSprite.height / 2)- 10, y: (audioIconSprite.height / 2) + 10};            
+            _oAudioToggle = new CToggle(_pStartPosAudio.x, _pStartPosAudio.y, audioIconSprite, mainInstance().getAudioActive());
             _oAudioToggle.addEventListener(settings.ON_MOUSE_UP, this._onAudioToggle, this);          
         }
         
-        var oSprite = CSpriteLibrary.getSprite('but_info');
+        const butInfoSprite = CSpriteLibrary.getSprite('but_info');
         if(settings.SHOW_CREDITS){
-            _pStartPosCredits = {x:10 + oSprite.width/2,y:(oSprite.height / 2) + 10};
-            _oButCredits = new CGfxButton(_pStartPosCredits.x, _pStartPosCredits.y, oSprite,s_oStage);
+            _pStartPosCredits = {x:10 + butInfoSprite.width / 2,y:(butInfoSprite.height / 2) + 10};
+            _oButCredits = new CGfxButton(_pStartPosCredits.x, _pStartPosCredits.y, butInfoSprite, s_oStage);
             _oButCredits.addEventListener(settings.ON_MOUSE_UP, this._onCredits, this);
             
-            _pStartPosFullscreen = {x:_pStartPosCredits.x + oSprite.width + 10,y:_pStartPosCredits.y};
+            _pStartPosFullscreen = {x: _pStartPosCredits.x + butInfoSprite.width + 10, y: _pStartPosCredits.y};
         }else{
-            _pStartPosFullscreen = {x:10 + oSprite.width/2,y:(oSprite.height / 2) + 10};
+            _pStartPosFullscreen = {x: 10 + (butInfoSprite.width / 2),y: (butInfoSprite.height / 2) + 10};
         }
         
         var doc = window.document;
@@ -83,10 +83,9 @@ function CMenu() {
         }
         
         if (_fRequestFullScreen && screenfull.enabled){
-            oSprite = CSpriteLibrary.getSprite('but_fullscreen');
-            
+            const butFullScreenSprite = CSpriteLibrary.getSprite('but_fullscreen');
 
-            _oButFullscreen = new CToggle(_pStartPosFullscreen.x,_pStartPosFullscreen.y,oSprite,s_bFullscreen,true);
+            _oButFullscreen = new CToggle(_pStartPosFullscreen.x,_pStartPosFullscreen.y, butFullScreenSprite, mainInstance().getAudioActive(), true);
             _oButFullscreen.addEventListener(settings.ON_MOUSE_UP, this._onFullscreenRelease, this);
         }
         
@@ -151,12 +150,12 @@ function CMenu() {
     
     this.resetFullscreenBut = function() {
         if (_fRequestFullScreen && screenfull.enabled){
-            _oButFullscreen.setActive(s_bFullscreen);
+            _oButFullscreen.setActive(mainInstance().getAudioActive());
         }
     };
 
     this._onFullscreenRelease = function(){
-        if (s_bFullscreen) { 
+        if (mainInstance().getAudioActive()) { 
 		    _fCancelFullScreen.call(window.document);
         } else {
             _fRequestFullScreen.call(window.document.documentElement);
@@ -167,7 +166,8 @@ function CMenu() {
     
     this._onCredits = function(){
         // TODO (jiwoniy)
-        var _oCreditsPanel = new CCreditsPanel();
+        // var _oCreditsPanel = new CCreditsPanel();
+        new CCreditsPanel();
     };
     // console.log(s_oMenu)
     // console.log(this)

@@ -16,7 +16,6 @@ import {
     s_bMobile,
     s_oStage,
     // s_oSpriteLibrary,
-    s_bFullscreen,
 } from './CMain.js'
 import settings from './settings.js'
 import {
@@ -58,24 +57,24 @@ function CInterface() {
     var _pStartPosFullscreen;
     
     this.initInterface = function() {                
-        var oExitX;        
+        let oExitX;        
         
-        var oSprite = CSpriteLibrary.getSprite('but_exit');
-        _pStartPosExit = {x: settings.CANVAS_WIDTH - (oSprite.height/2)- 20, y: (oSprite.height/2) + 10};
-        _oButExit = new CGfxButton(_pStartPosExit.x, _pStartPosExit.y, oSprite,true);
+        const closeSprite = CSpriteLibrary.getSprite('but_exit');
+        _pStartPosExit = {x: settings.CANVAS_WIDTH - (closeSprite.height / 2)- 20, y: (closeSprite.height / 2) + 10};
+        _oButExit = new CGfxButton(_pStartPosExit.x, _pStartPosExit.y, closeSprite, true);
         _oButExit.addEventListener(settings.ON_MOUSE_UP, this._onExit, this);
         
-        oExitX = settings.CANVAS_WIDTH - (oSprite.width/2) - 100;
-        _pStartPosAudio = {x: oExitX-15, y: (oSprite.height/2) + 10};
+        oExitX = settings.CANVAS_WIDTH - (closeSprite.width / 2) - 100;
+        _pStartPosAudio = {x: oExitX-15, y: (closeSprite.height / 2) + 10};
         
-        if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
-            var oSprite = CSpriteLibrary.getSprite('audio_icon');
-            _oAudioToggle = new CToggle(_pStartPosAudio.x,_pStartPosAudio.y,oSprite, mainInstance().getAudioActive());
+        if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false) {
+            const audioSprite = CSpriteLibrary.getSprite('audio_icon');
+            _oAudioToggle = new CToggle(_pStartPosAudio.x,_pStartPosAudio.y, audioSprite, mainInstance().getAudioActive());
             _oAudioToggle.addEventListener(settings.ON_MOUSE_UP, this._onAudioToggle, this);          
         }
         
-        var doc = window.document;
-        var docEl = doc.documentElement;
+        const doc = window.document;
+        const docEl = doc.documentElement;
         _fRequestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
         _fCancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
         
@@ -84,53 +83,61 @@ function CInterface() {
         }
         
         if (_fRequestFullScreen && screenfull.enabled){
-            oSprite = CSpriteLibrary.getSprite('but_fullscreen');
-            _pStartPosFullscreen = {x:oSprite.width/4 + 10,y:oSprite.height/2 + 10};
+            const fullScreenSprite = CSpriteLibrary.getSprite('but_fullscreen');
+            _pStartPosFullscreen = {x: fullScreenSprite.width / 4 + 10,y: fullScreenSprite.height / 2 + 10};
 
-            _oButFullscreen = new CToggle(_pStartPosFullscreen.x,_pStartPosFullscreen.y,oSprite,s_bFullscreen,true);
+            _oButFullscreen = new CToggle(_pStartPosFullscreen.x, _pStartPosFullscreen.y, fullScreenSprite, mainInstance().getFullscreen(), true);
             _oButFullscreen.addEventListener(settings.ON_MOUSE_UP, this._onFullscreenRelease, this);
         }
         
-        var oSprite = CSpriteLibrary.getSprite('money_panel');
-        _oMoneyDisplay = new CDisplayPanel(370,settings.CANVAS_HEIGHT - 225,oSprite,TEXT_CURRENCY +settings.START_PLAYER_MONEY,settings.PRIMARY_FONT,"#ffffff",40);
+        const moneyPanelSprite = CSpriteLibrary.getSprite('money_panel');
+        _oMoneyDisplay = new CDisplayPanel(370, settings.CANVAS_HEIGHT - 225, moneyPanelSprite,TEXT_CURRENCY + settings.START_PLAYER_MONEY, settings.PRIMARY_FONT, "#ffffff", 40);
 
-        var oSprite = CSpriteLibrary.getSprite('plus_display');
-        _oBetDisplay = new CDisplayPanel(480,settings.CANVAS_HEIGHT - 130,oSprite,"$1",settings.PRIMARY_FONT,"#ffffff",40, false, s_oStage);
+        const plusDispalySprite = CSpriteLibrary.getSprite('plus_display');
+        _oBetDisplay = new CDisplayPanel(480, settings.CANVAS_HEIGHT - 130, plusDispalySprite, '$1', settings.PRIMARY_FONT, '#ffffff', 40, false, s_oStage);
         _oBetDisplay.setTextPosition(51);
 
-        var oSprite = CSpriteLibrary.getSprite('but_plus');
-        _oButPlus = new CTextToggle(638,settings.CANVAS_HEIGHT - 130,oSprite,TEXT_PLUS,settings.PRIMARY_FONT,"#ffffff",70, false, s_oStage);
+        const butPlusSprite = CSpriteLibrary.getSprite('but_plus');
+        _oButPlus = new CTextToggle(638, settings.CANVAS_HEIGHT - 130, butPlusSprite, TEXT_PLUS, settings.PRIMARY_FONT, '#ffffff', 70, false, s_oStage);
         _oButPlus.enable();
         _oButPlus.setTextPosition(0,20);
         _oButPlus.addEventListener(settings.ON_MOUSE_UP, this._onButPlusRelease, this);
 
-        var oSprite = CSpriteLibrary.getSprite('but_plus');
-        _oButMin = new CTextToggle(320,settings.CANVAS_HEIGHT - 130,oSprite,TEXT_MIN,settings.PRIMARY_FONT,"#ffffff",70, false, s_oStage);
+        // const butPlusSprite = CSpriteLibrary.getSprite('but_plus');
+        _oButMin = new CTextToggle(320, settings.CANVAS_HEIGHT - 130, butPlusSprite, TEXT_MIN, settings.PRIMARY_FONT, '#ffffff', 70, false, s_oStage);
         _oButMin.enable();
         _oButMin.setTextPosition(0,20);
         _oButMin.setScaleX(-1);
         _oButMin.addEventListener(settings.ON_MOUSE_UP, this._onButMinRelease, this);
 
-        var oSprite = CSpriteLibrary.getSprite('but_generic');
-        _oButPlay1 = new CTextToggle(820,settings.CANVAS_HEIGHT - 130,oSprite, TEXT_PLAY1,settings.PRIMARY_FONT,"#ffffff",30, false, s_oStage);
+        const butGenericSprite = CSpriteLibrary.getSprite('but_generic');
+        _oButPlay1 = new CTextToggle(820, settings.CANVAS_HEIGHT - 130, butGenericSprite, TEXT_PLAY1, settings.PRIMARY_FONT, '#ffffff',30, false, s_oStage);
         _oButPlay1.disable();
         _oButPlay1.setTextPosition(0,10);
         _oButPlay1.addEventListener(settings.ON_MOUSE_UP, this._onPlay1, this);
         
-        var oSprite = CSpriteLibrary.getSprite('but_generic');
-        _oButPlay5 = new CTextToggle(1060,settings.CANVAS_HEIGHT - 130,oSprite, TEXT_PLAY5,settings.PRIMARY_FONT,"#ffffff",30, false, s_oStage);
+        // var oSprite = CSpriteLibrary.getSprite('but_generic');
+        _oButPlay5 = new CTextToggle(1060, settings.CANVAS_HEIGHT - 130, butGenericSprite, TEXT_PLAY5, settings.PRIMARY_FONT, '#ffffff',30, false, s_oStage);
         _oButPlay5.disable();
         _oButPlay5.setTextPosition(0,10);
         _oButPlay5.addEventListener(settings.ON_MOUSE_UP, this._onPlay5, this);
 
-        var oSprite = CSpriteLibrary.getSprite('but_generic');
-        _oButUndo = new CTextToggle(1300,settings.CANVAS_HEIGHT - 130,oSprite, TEXT_UNDO,settings.PRIMARY_FONT,"#ffffff",30, false, s_oStage);
+        // var oSprite = CSpriteLibrary.getSprite('but_generic');
+        _oButUndo = new CTextToggle(1300, settings.CANVAS_HEIGHT - 130, butGenericSprite, TEXT_UNDO,settings.PRIMARY_FONT, '#ffffff', 30, false, s_oStage);
         _oButUndo.enable();
         _oButUndo.setTextPosition(0,10);
         _oButUndo.addEventListener(settings.ON_MOUSE_UP, this._onUndo, this);
         
-        var oSprite = CSpriteLibrary.getSprite('but_generic');
-        _oButClear = new CTextToggle(1540,settings.CANVAS_HEIGHT - 130,oSprite, TEXT_CLEAR,settings.PRIMARY_FONT,"#ffffff",30, false, s_oStage);
+        // var oSprite = CSpriteLibrary.getSprite('but_generic');
+        _oButClear = new CTextToggle(1540,
+            settings.CANVAS_HEIGHT - 130,
+            butGenericSprite,
+            TEXT_CLEAR,
+            settings.PRIMARY_FONT,
+            '#ffffff',
+            30,
+            false,
+            s_oStage);
         _oButClear.enable();
         _oButClear.setTextPosition(0,10);
         _oButClear.addEventListener(settings.ON_MOUSE_UP, this._onClear, this);
@@ -267,12 +274,12 @@ function CInterface() {
     
     this.resetFullscreenBut = function() {
         if (_fRequestFullScreen && screenfull.enabled){
-            _oButFullscreen.setActive(s_bFullscreen);
+            _oButFullscreen.setActive(mainInstance().getFullscreen());
         }
     };
     
     this._onFullscreenRelease = function() {
-        if(s_bFullscreen) {
+        if(mainInstance().getFullscreen()) {
 		    _fCancelFullScreen.call(window.document);
         } else {
             _fRequestFullScreen.call(window.document.documentElement);
@@ -304,14 +311,16 @@ const Singleton = (() => {
     return {
       getInstance: (isConstructor = false) => {
           // flag === true ===> constructor
-        if (isConstructor && !instance) {
+        if (isConstructor) {
           instance = createInstance();
+        } else if (isConstructor && !instance) {
+            instance = createInstance();
         }
         return instance;
       },
     };
 })();
-const interfaceInstance = Singleton.getInstance()
+const interfaceInstance = () => Singleton.getInstance(false)
 
 export default Singleton.getInstance;
 export {

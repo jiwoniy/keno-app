@@ -37,16 +37,20 @@ function CTextToggle(iXPos,iYPos,oSprite,szText,szFont,szColor,iFontSize, bStand
         _oTextBack = new createjs.Text(szText," "+iFontSize+"px "+szFont, "#000000");
         _oTextBack.textAlign = "center";
         _oTextBack.textBaseline = "alphabetic";
-        var oBounds = _oTextBack.getBounds();    
+        const textBackBounds = _oTextBack.getBounds();    
         _oTextBack.x = oSprite.width/2 + iStepShadow;
-        _oTextBack.y = Math.floor((oSprite.height)/2) +(oBounds.height/3) + iStepShadow -7;
+        _oTextBack.y = Math.floor((oSprite.height)/2) +(textBackBounds.height/3) + iStepShadow -7;
 
-        _oText = new createjs.Text(szText," "+iFontSize+"px "+szFont, szColor);
+        _oText = new createjs.Text(szText,
+            ` ${iFontSize}px ${szFont}`
+            // " "+iFontSize+"px "+szFont
+            , szColor);
+
         _oText.textAlign = "center";
         _oText.textBaseline = "alphabetic";
-        var oBounds = _oText.getBounds();    
-        _oText.x = oSprite.width/2;
-        _oText.y = Math.floor((oSprite.height)/2) +(oBounds.height/3) -7;
+        const textBounds = _oText.getBounds();    
+        _oText.x = oSprite.width / 2;
+        _oText.y = Math.floor((oSprite.height)/2) +(textBounds.height/3) -7;
 
         _oButton = new createjs.Container();
         _oButton.x = iXPos;

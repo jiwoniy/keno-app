@@ -1,65 +1,21 @@
 import $ from 'jquery'
+
 import createjs from './createjs.js'
-
 import screenfull from './screenfull.js'
-// import {
-//     CANVAS_WIDTH,
-//     CANVAS_HEIGHT,
-
-//     EDGEBOARD_X,
-//     EDGEBOARD_Y,
-
-//     // FPS_TIME,
-//     DISABLE_SOUND_MOBILE,
-
-//     // PRIMARY_FONT,
-//     // SECONDARY_FONT,
-//     // PRIMARY_FONT_COLOUR,
-
-//     // STATE_LOADING,
-//     // STATE_MENU,
-//     // STATE_HELP,
-//     // STATE_GAME,
-
-//     // ON_MOUSE_DOWN,
-//     // ON_MOUSE_UP,
-//     // ON_MOUSE_OVER,
-//     // ON_MOUSE_OUT,
-//     // ON_DRAG_START,
-//     // ON_DRAG_END,
-
-//     // NUM_DIFFERENT_BALLS,
-//     // ANIMATION_SPEED,
-
-//     // WIN_OCCURRENCE,
-//     // PAYOUTS,
-
-//     // BANK,
-//     // START_PLAYER_MONEY,
-
-//     // BET,
-
-//     ENABLE_FULLSCREEN,
-//     ENABLE_CHECK_ORIENTATION,
-//     // SHOW_CREDITS,
-// } from './settings.js'
 import settings from './settings.js'
 
 import { 
-    // s_oInterface,
     s_oMenu
 } from './global.js'
 import {
     interfaceInstance
 } from './CInterface.js'
-// import CInterface from './CInterface'
 
 import {
     s_oStage,
     s_bMobile,
     mainInstance,
     s_aSounds,
-    s_bFullscreen,
 } from './CMain.js'
 
 var s_iScaleFactor = 1;
@@ -67,11 +23,6 @@ var s_iOffsetX;
 var s_iOffsetY;
 var s_bIsIphone = false;
 
-/**
- * jQuery.browser.mobile (http://detectmobilebrowser.com/)
- * jQuery.browser.mobile will be true if the browser is a mobile device
- **/
-(function(a){($.browser=$.browser||{}).mobile=/android|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(ad|hone|od)|iris|kindle|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|symbian|tablet|treo|up\.(browser|link)|vodafone|wap|webos|windows (ce|phone)|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|e\-|e\/|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(di|rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|xda(\-|2|g)|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))})(navigator.userAgent||navigator.vendor||window.opera);
 
 $(window).resize(function() {
 	sizeHandler();
@@ -89,7 +40,7 @@ function getSize(Name) {
     if (window["inner" + Name] === undefined) {
             // IE6 & IE7 don't have window.innerWidth or innerHeight
             size = documentElement["client" + Name];
-    } else if (window["inner" + Name] != documentElement["client" + Name]) {
+    } else if (window["inner" + Name] !== documentElement["client" + Name]) {
         // WebKit doesn't include scrollbars while calculating viewport size so we have to get fancy
 
         // Insert markup to test if a media query will match document.doumentElement["client" + Name]
@@ -104,7 +55,7 @@ function getSize(Name) {
         bodyElement.appendChild(divElement);
         documentElement.insertBefore(bodyElement, document.head);
 
-        if (divElement["offset" + Name] == 7) {
+        if (divElement["offset" + Name] === 7) {
             // Media query matches document.documentElement["client" + Name]
             size = documentElement["client" + Name];
         } else {
@@ -181,10 +132,10 @@ function getIOSWindowHeight() {
 };
 
 // You can also get height of the toolbars that are currently displayed
-function getHeightOfIOSToolbars() {
-    var tH = (window.orientation === 0 ? window.height : window.screen.width) -  getIOSWindowHeight();
-    return tH > 1 ? tH : 0;
-};
+// function getHeightOfIOSToolbars() {
+//     var tH = (window.orientation === 0 ? window.height : window.screen.width) -  getIOSWindowHeight();
+//     return tH > 1 ? tH : 0;
+// };
 
 //THIS FUNCTION MANAGES THE CANVAS SCALING TO FIT PROPORTIONALLY THE GAME TO THE CURRENT DEVICE RESOLUTION
 
@@ -249,8 +200,8 @@ function sizeHandler() {
         s_iOffsetX = 0;
     }
     
-    if (interfaceInstance !== null){
-        interfaceInstance.refreshButtonPos( s_iOffsetX,s_iOffsetY);
+    if (interfaceInstance() !== null){
+        interfaceInstance().refreshButtonPos( s_iOffsetX,s_iOffsetY);
     }
     
     // TODO (jiwoniy)
@@ -311,9 +262,8 @@ function _checkOrientation(iWidth, iHeight){
     }
 }
 
-function playSound(szSound,iVolume,bLoop){
-    if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
-
+function playSound(szSound, iVolume, bLoop) {
+    if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false) {
         s_aSounds[szSound].play();
         s_aSounds[szSound].volume(iVolume);
 
@@ -324,23 +274,23 @@ function playSound(szSound,iVolume,bLoop){
     return null;
 }
 
-function stopSound(szSound){
-    if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
-        s_aSounds[szSound].stop();
-    }
-}   
+// function stopSound(szSound){
+//     if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
+//         s_aSounds[szSound].stop();
+//     }
+// }   
 
-function setVolume(szSound, iVolume){
-    if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
-        s_aSounds[szSound].volume(iVolume);
-    }
-}  
+// function setVolume(szSound, iVolume){
+//     if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
+//         s_aSounds[szSound].volume(iVolume);
+//     }
+// }  
 
-function setMute(szSound, bMute){
-    if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
-        s_aSounds[szSound].mute(bMute);
-    }
-}
+// function setMute(szSound, bMute){
+//     if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
+//         s_aSounds[szSound].mute(bMute);
+//     }
+// }
 
 function createBitmap(oSprite, iWidth, iHeight){
 	const oBmp = new createjs.Bitmap(oSprite);
@@ -357,44 +307,45 @@ function createBitmap(oSprite, iWidth, iHeight){
 	return oBmp;
 }
 
-function createSprite(oSpriteSheet, szState, iRegX,iRegY,iWidth, iHeight){
-	if (szState !== null){
-		var oRetSprite = new createjs.Sprite(oSpriteSheet, szState);
+function createSprite(oSpriteSheet, szState, iRegX, iRegY, iWidth, iHeight) {
+    let oRetSprite = null
+	if (szState !== null) {
+		oRetSprite = new createjs.Sprite(oSpriteSheet, szState);
 	} else {
-		var oRetSprite = new createjs.Sprite(oSpriteSheet);
+		oRetSprite = new createjs.Sprite(oSpriteSheet);
 	}
 	
-	var hitObject = new createjs.Shape();
-	hitObject .graphics.beginFill("#000000").drawRect(-iRegX, -iRegY, iWidth, iHeight);
+	const hitObject = new createjs.Shape();
+	hitObject.graphics.beginFill("#000000").drawRect(-iRegX, -iRegY, iWidth, iHeight);
 
 	oRetSprite.hitArea = hitObject;
 	
 	return oRetSprite;
 }
 
-function pad(n, width, z) {
-    z = z || '0';
-    n = n + '';
-    return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
-}
+// function pad(n, width, z) {
+//     z = z || '0';
+//     n = n + '';
+//     return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+// }
 
-function randomFloatBetween(minValue,maxValue,precision){
-    if(typeof(precision) === 'undefined'){
-        precision = 2;
-    }
-    return parseFloat(Math.min(minValue + (Math.random() * (maxValue - minValue)),maxValue).toFixed(precision));
-}
+// function randomFloatBetween(minValue,maxValue,precision){
+//     if(typeof(precision) === 'undefined'){
+//         precision = 2;
+//     }
+//     return parseFloat(Math.min(minValue + (Math.random() * (maxValue - minValue)),maxValue).toFixed(precision));
+// }
 
-function rotateVector2D( iAngle, v) { 
-	var iX = v.getX() * Math.cos( iAngle ) + v.getY() * Math.sin( iAngle );
-	var iY = v.getX() * (-Math.sin( iAngle )) + v.getY() * Math.cos( iAngle ); 
-	v.set( iX, iY );
-}
+// function rotateVector2D( iAngle, v) { 
+// 	var iX = v.getX() * Math.cos( iAngle ) + v.getY() * Math.sin( iAngle );
+// 	var iY = v.getX() * (-Math.sin( iAngle )) + v.getY() * Math.cos( iAngle ); 
+// 	v.set( iX, iY );
+// }
 
-function tweenVectorsOnX( vStart, vEnd, iLerp ){
-    var iNewX = vStart + iLerp *( vEnd-vStart);
-    return iNewX;
-}
+// function tweenVectorsOnX( vStart, vEnd, iLerp ){
+//     var iNewX = vStart + iLerp *( vEnd-vStart);
+//     return iNewX;
+// }
 
 function shuffle(array) {
   var currentIndex = array.length
@@ -418,29 +369,29 @@ function shuffle(array) {
   return array;
 }
 
-function bubbleSort(a)
-{
-    var swapped;
-    do {
-        swapped = false;
-        for (var i=0; i < a.length-1; i++) {
-            if (a[i] > a[i+1]) {
-                var temp = a[i];
-                a[i] = a[i+1];
-                a[i+1] = temp;
-                swapped = true;
-            }
-        }
-    } while (swapped);
-}
+// function bubbleSort(a)
+// {
+//     var swapped;
+//     do {
+//         swapped = false;
+//         for (var i=0; i < a.length-1; i++) {
+//             if (a[i] > a[i+1]) {
+//                 var temp = a[i];
+//                 a[i] = a[i+1];
+//                 a[i+1] = temp;
+//                 swapped = true;
+//             }
+//         }
+//     } while (swapped);
+// }
 
-function compare(a,b) {
-  if (a.index > b.index)
-     return -1;
-  if (a.index < b.index)
-    return 1;
-  return 0;
-}
+// function compare(a,b) {
+//   if (a.index > b.index)
+//      return -1;
+//   if (a.index < b.index)
+//     return 1;
+//   return 0;
+// }
 
 //----------------------
 		// Linear	
@@ -456,9 +407,9 @@ function compare(a,b) {
 		 * @return A value between b and c parameters
 		 */
 
-function easeLinear (t, b, c, d){
-	return c*t/d + b;
-}
+// function easeLinear (t, b, c, d) {
+// 	return c*t/d + b;
+// }
 
 //----------------------
 		// Quad		
@@ -474,9 +425,9 @@ function easeLinear (t, b, c, d){
 		 * @return A value between b and c parameters
 		 */	
 
-function easeInQuad (t, b, c, d){
-			return c*(t/=d)*t + b;
-		}
+// function easeInQuad (t, b, c, d) {
+//     return c*(t/=d)*t + b;
+// }
 //----------------------
 		// Sine	
 		/**
@@ -491,15 +442,13 @@ function easeInQuad (t, b, c, d){
 		 * @return A value between b and c parameters
 		 */	                
                 
-function easeInSine (t, b, c, d) {
-			return -c * Math.cos(t/d * (Math.PI/2)) + c + b;
-		}
+// function easeInSine (t, b, c, d) {
+//     return -c * Math.cos(t/d * (Math.PI/2)) + c + b;
+// }          
                 
-                
-                
-function easeInCubic (t, b, c, d) {
-			return c*(t/=d)*t*t + b;
-		};                
+// function easeInCubic (t, b, c, d) {
+//     return c*(t/=d)*t*t + b;
+// };                
 
 
 // function getTrajectoryPoint(t,p){
@@ -511,32 +460,32 @@ function easeInCubic (t, b, c, d) {
 //     return result;
 // }
 
-function formatTime(iTime){	
-    iTime/=1000;
-    var iMins = Math.floor(iTime/60);
-    var iSecs = iTime-(iMins*60);
-    iSecs = parseFloat(iSecs).toFixed(1)
+// function formatTime(iTime) {	
+//     iTime/=1000;
+//     var iMins = Math.floor(iTime/60);
+//     var iSecs = iTime-(iMins*60);
+//     iSecs = parseFloat(iSecs).toFixed(1)
     
-    var szRet = "";
+//     var szRet = "";
 
-    if ( iMins < 10 ){
-        szRet += "0" + iMins + ":";
-    } else {
-        szRet += iMins + ":";
-    }
+//     if ( iMins < 10 ){
+//         szRet += "0" + iMins + ":";
+//     } else {
+//         szRet += iMins + ":";
+//     }
 
-    if ( iSecs < 10 ){
-        szRet += "0" + iSecs;
-    } else {
-        szRet += iSecs;
-    }	
+//     if ( iSecs < 10 ){
+//         szRet += "0" + iSecs;
+//     } else {
+//         szRet += iSecs;
+//     }	
 
-    return szRet;
-}
+//     return szRet;
+// }
 
-function degreesToRadians(iAngle){
-    return iAngle * Math.PI / 180;
-}
+// function degreesToRadians(iAngle) {
+//     return iAngle * Math.PI / 180;
+// }
 
 // function checkRectCollision(bitmap1,bitmap2) {
 //     var b1, b2;
@@ -545,97 +494,97 @@ function degreesToRadians(iAngle){
 //     return calculateIntersection(b1,b2);
 // }
 
-function calculateIntersection(rect1, rect2){
-    // first we have to calculate the
-    // center of each rectangle and half of
-    // width and height
-    var dx, dy, r1={}, r2={};
-    r1.cx = rect1.x + (r1.hw = (rect1.width /2));
-    r1.cy = rect1.y + (r1.hh = (rect1.height/2));
-    r2.cx = rect2.x + (r2.hw = (rect2.width /2));
-    r2.cy = rect2.y + (r2.hh = (rect2.height/2));
+// function calculateIntersection(rect1, rect2) {
+//     // first we have to calculate the
+//     // center of each rectangle and half of
+//     // width and height
+//     var dx, dy, r1={}, r2={};
+//     r1.cx = rect1.x + (r1.hw = (rect1.width /2));
+//     r1.cy = rect1.y + (r1.hh = (rect1.height/2));
+//     r2.cx = rect2.x + (r2.hw = (rect2.width /2));
+//     r2.cy = rect2.y + (r2.hh = (rect2.height/2));
 
-    dx = Math.abs(r1.cx-r2.cx) - (r1.hw + r2.hw);
-    dy = Math.abs(r1.cy-r2.cy) - (r1.hh + r2.hh);
+//     dx = Math.abs(r1.cx-r2.cx) - (r1.hw + r2.hw);
+//     dy = Math.abs(r1.cy-r2.cy) - (r1.hh + r2.hh);
 
-    if (dx < 0 && dy < 0) {
-      dx = Math.min(Math.min(rect1.width,rect2.width),-dx);
-      dy = Math.min(Math.min(rect1.height,rect2.height),-dy);
-      return {x:Math.max(rect1.x,rect2.x),
-              y:Math.max(rect1.y,rect2.y),
-              width:dx,
-              height:dy,
-              rect1: rect1,
-              rect2: rect2};
-    } else {
-      return null;
-    }
-}
+//     if (dx < 0 && dy < 0) {
+//       dx = Math.min(Math.min(rect1.width,rect2.width),-dx);
+//       dy = Math.min(Math.min(rect1.height,rect2.height),-dy);
+//       return {x:Math.max(rect1.x,rect2.x),
+//               y:Math.max(rect1.y,rect2.y),
+//               width:dx,
+//               height:dy,
+//               rect1: rect1,
+//               rect2: rect2};
+//     } else {
+//       return null;
+//     }
+// }
 
-function getBounds(obj,iTolerance) {
-    var bounds={x:Infinity,y:Infinity,width:0,height:0};
-    if ( obj instanceof createjs.Container ) {
-      bounds.x2 = -Infinity;
-      bounds.y2 = -Infinity;
-      var children = obj.children, l=children.length, cbounds, c;
-      for ( c = 0; c < l; c++ ) {
-        cbounds = getBounds(children[c],1);
-        if ( cbounds.x < bounds.x ) bounds.x = cbounds.x;
-        if ( cbounds.y < bounds.y ) bounds.y = cbounds.y;
-        if ( cbounds.x + cbounds.width > bounds.x2 ) bounds.x2 = cbounds.x + cbounds.width;
-        if ( cbounds.y + cbounds.height > bounds.y2 ) bounds.y2 = cbounds.y + cbounds.height;
-        //if ( cbounds.x - bounds.x + cbounds.width  > bounds.width  ) bounds.width  = cbounds.x - bounds.x + cbounds.width;
-        //if ( cbounds.y - bounds.y + cbounds.height > bounds.height ) bounds.height = cbounds.y - bounds.y + cbounds.height;
-      }
-      if ( bounds.x == Infinity ) bounds.x = 0;
-      if ( bounds.y == Infinity ) bounds.y = 0;
-      if ( bounds.x2 == Infinity ) bounds.x2 = 0;
-      if ( bounds.y2 == Infinity ) bounds.y2 = 0;
+// function getBounds(obj,iTolerance) {
+//     var bounds={x:Infinity,y:Infinity,width:0,height:0};
+//     if ( obj instanceof createjs.Container ) {
+//       bounds.x2 = -Infinity;
+//       bounds.y2 = -Infinity;
+//       var children = obj.children, l=children.length, cbounds, c;
+//       for ( c = 0; c < l; c++ ) {
+//         cbounds = getBounds(children[c],1);
+//         if ( cbounds.x < bounds.x ) bounds.x = cbounds.x;
+//         if ( cbounds.y < bounds.y ) bounds.y = cbounds.y;
+//         if ( cbounds.x + cbounds.width > bounds.x2 ) bounds.x2 = cbounds.x + cbounds.width;
+//         if ( cbounds.y + cbounds.height > bounds.y2 ) bounds.y2 = cbounds.y + cbounds.height;
+//         //if ( cbounds.x - bounds.x + cbounds.width  > bounds.width  ) bounds.width  = cbounds.x - bounds.x + cbounds.width;
+//         //if ( cbounds.y - bounds.y + cbounds.height > bounds.height ) bounds.height = cbounds.y - bounds.y + cbounds.height;
+//       }
+//       if ( bounds.x === Infinity ) bounds.x = 0;
+//       if ( bounds.y === Infinity ) bounds.y = 0;
+//       if ( bounds.x2 === Infinity ) bounds.x2 = 0;
+//       if ( bounds.y2 === Infinity ) bounds.y2 = 0;
       
-      bounds.width = bounds.x2 - bounds.x;
-      bounds.height = bounds.y2 - bounds.y;
-      delete bounds.x2;
-      delete bounds.y2;
-    } else {
-      var gp,gp2,gp3,gp4,imgr={},sr;
-      if ( obj instanceof createjs.Bitmap ) {
-        sr = obj.sourceRect || obj.image;
+//       bounds.width = bounds.x2 - bounds.x;
+//       bounds.height = bounds.y2 - bounds.y;
+//       delete bounds.x2;
+//       delete bounds.y2;
+//     } else {
+//       var gp,gp2,gp3,gp4,imgr={},sr;
+//       if ( obj instanceof createjs.Bitmap ) {
+//         sr = obj.sourceRect || obj.image;
 
-        imgr.width = sr.width * iTolerance;
-        imgr.height = sr.height * iTolerance;
-      } else if ( obj instanceof createjs.Sprite ) {
-        if ( obj.spriteSheet._frames && obj.spriteSheet._frames[obj.currentFrame] && obj.spriteSheet._frames[obj.currentFrame].image ) {
-          var cframe = obj.spriteSheet.getFrame(obj.currentFrame);
-          imgr.width =  cframe.rect.width;
-          imgr.height =  cframe.rect.height;
-          imgr.regX = cframe.regX;
-          imgr.regY = cframe.regY;
-        } else {
-          bounds.x = obj.x || 0;
-          bounds.y = obj.y || 0;
-        }
-      } else {
-        bounds.x = obj.x || 0;
-        bounds.y = obj.y || 0;
-      }
+//         imgr.width = sr.width * iTolerance;
+//         imgr.height = sr.height * iTolerance;
+//       } else if ( obj instanceof createjs.Sprite ) {
+//         if ( obj.spriteSheet._frames && obj.spriteSheet._frames[obj.currentFrame] && obj.spriteSheet._frames[obj.currentFrame].image ) {
+//           var cframe = obj.spriteSheet.getFrame(obj.currentFrame);
+//           imgr.width =  cframe.rect.width;
+//           imgr.height =  cframe.rect.height;
+//           imgr.regX = cframe.regX;
+//           imgr.regY = cframe.regY;
+//         } else {
+//           bounds.x = obj.x || 0;
+//           bounds.y = obj.y || 0;
+//         }
+//       } else {
+//         bounds.x = obj.x || 0;
+//         bounds.y = obj.y || 0;
+//       }
 
-      imgr.regX = imgr.regX || 0; imgr.width  = imgr.width  || 0;
-      imgr.regY = imgr.regY || 0; imgr.height = imgr.height || 0;
-      bounds.regX = imgr.regX;
-      bounds.regY = imgr.regY;
+//       imgr.regX = imgr.regX || 0; imgr.width  = imgr.width  || 0;
+//       imgr.regY = imgr.regY || 0; imgr.height = imgr.height || 0;
+//       bounds.regX = imgr.regX;
+//       bounds.regY = imgr.regY;
       
-      gp  = obj.localToGlobal(0         -imgr.regX,0          -imgr.regY);
-      gp2 = obj.localToGlobal(imgr.width-imgr.regX,imgr.height-imgr.regY);
-      gp3 = obj.localToGlobal(imgr.width-imgr.regX,0          -imgr.regY);
-      gp4 = obj.localToGlobal(0         -imgr.regX,imgr.height-imgr.regY);
+//       gp  = obj.localToGlobal(0         -imgr.regX,0          -imgr.regY);
+//       gp2 = obj.localToGlobal(imgr.width-imgr.regX,imgr.height-imgr.regY);
+//       gp3 = obj.localToGlobal(imgr.width-imgr.regX,0          -imgr.regY);
+//       gp4 = obj.localToGlobal(0         -imgr.regX,imgr.height-imgr.regY);
 
-      bounds.x = Math.min(Math.min(Math.min(gp.x,gp2.x),gp3.x),gp4.x);
-      bounds.y = Math.min(Math.min(Math.min(gp.y,gp2.y),gp3.y),gp4.y);
-      bounds.width = Math.max(Math.max(Math.max(gp.x,gp2.x),gp3.x),gp4.x) - bounds.x;
-      bounds.height = Math.max(Math.max(Math.max(gp.y,gp2.y),gp3.y),gp4.y) - bounds.y;
-    }
-    return bounds;
-}
+//       bounds.x = Math.min(Math.min(Math.min(gp.x,gp2.x),gp3.x),gp4.x);
+//       bounds.y = Math.min(Math.min(Math.min(gp.y,gp2.y),gp3.y),gp4.y);
+//       bounds.width = Math.max(Math.max(Math.max(gp.x,gp2.x),gp3.x),gp4.x) - bounds.x;
+//       bounds.height = Math.max(Math.max(Math.max(gp.y,gp2.y),gp3.y),gp4.y) - bounds.y;
+//     }
+//     return bounds;
+// }
 
 function NoClickDelay(el) {
 	this.element = el;
@@ -660,12 +609,20 @@ function NoClickDelay(el) {
 // }
 
 NoClickDelay.prototype = {
-handleEvent: function(e) {
-    switch(e.type) {
-        case 'touchstart': this.onTouchStart(e); break;
-        case 'touchmove': this.onTouchMove(e); break;
-        case 'touchend': this.onTouchEnd(e); break;
-    }
+    handleEvent: function(e) {
+        switch(e.type) {
+            case 'touchstart':
+                this.onTouchStart(e);
+                break;
+            case 'touchmove':
+                this.onTouchMove(e);
+                break;
+            case 'touchend':
+                this.onTouchEnd(e);
+                break;
+            default:
+                break
+        }
 },
 	
 onTouchStart: function(e) {
@@ -686,7 +643,7 @@ onTouchEnd: function(e) {
     
     if( !this.moved ) {
         var theTarget = document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
-        if(theTarget.nodeType == 3) theTarget = theTarget.parentNode;
+        if(theTarget.nodeType === 3) theTarget = theTarget.parentNode;
         
         var theEvent = document.createEvent('MouseEvents');
         theEvent.initEvent('click', true, true);
@@ -739,30 +696,28 @@ onTouchEnd: function(e) {
     }
 })();
 
-function ctlArcadeResume(){
-    if(mainInstance() !== null){
-        mainInstance().startUpdate();
-    }
-}
+// function ctlArcadeResume(){
+//     if(mainInstance() !== null){
+//         mainInstance().startUpdate();
+//     }
+// }
 
-function ctlArcadePause(){
-    if(mainInstance() !== null){
-        mainInstance().stopUpdate();
-    }
-}
+// function ctlArcadePause(){
+//     if(mainInstance() !== null){
+//         mainInstance().stopUpdate();
+//     }
+// }
 
 function getParamValue(paramName){
         var url = window.location.search.substring(1);
         var qArray = url.split('&'); 
-        for (var i = 0; i < qArray.length; i++) 
+        for (let i = 0; i < qArray.length; i += 1) 
         {
                 var pArr = qArray[i].split('=');
-                if (pArr[0] == paramName) 
+                if (pArr[0] === paramName) 
                         return pArr[1];
         }
 }
-
-
 
 function fullscreenHandler(){
     const screen = window.screen;
@@ -772,13 +727,15 @@ function fullscreenHandler(){
     }
 	
     if(screen.height < window.innerHeight+3 && screen.height > window.innerHeight-3){
-        s_bFullscreen = true;
+        mainInstance().setFullScreen(true)
+        // s_bFullscreen = true;
     }else{
-        s_bFullscreen = false;
+        mainInstance().setFullScreen(false)
+        // s_bFullscreen = false;
     }
 
-    if (interfaceInstance !== null){
-        interfaceInstance.resetFullscreenBut();
+    if (interfaceInstance() !== null){
+        interfaceInstance().resetFullscreenBut();
     }
 
     if (s_oMenu !== null){
@@ -789,18 +746,17 @@ function fullscreenHandler(){
 
 
 if (screenfull.enabled) {
-    screenfull.on('change', function(){
-            s_bFullscreen = screenfull.isFullscreen;
+    screenfull.on('change', function() {
+        // s_bFullscreen = screenfull.isFullscreen;
+        mainInstance().setFullScreen(screenfull.isFullscreen)
 
-            if (interfaceInstance !== null){
-                interfaceInstance.resetFullscreenBut();
-            }
+        if (interfaceInstance() !== null){
+            interfaceInstance().resetFullscreenBut();
+        }
 
-            if (s_oMenu !== null){
-                s_oMenu.resetFullscreenBut();
-            }
-
-        
+        if (s_oMenu !== null){
+            s_oMenu.resetFullscreenBut();
+        } 
     });
 }
 

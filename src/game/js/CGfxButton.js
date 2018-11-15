@@ -21,20 +21,18 @@ function CGfxButton(iXPos,iYPos,oSprite){
     var _oListenerMouseDown;
     var _oListenerMouseUp;
     
-    this._init =function(iXPos,iYPos,oSprite){
+    this._init =function(iXPos,iYPos,oSprite) {
+        _aCbCompleted = [];
+        _aCbOwner = [];
         
-        _aCbCompleted=new Array();
-        _aCbOwner =new Array();
-        
-        _oButton = createBitmap( oSprite);
+        _oButton = createBitmap(oSprite);
         _oButton.x = iXPos;
         _oButton.y = iYPos; 
                                    
-        _oButton.regX = oSprite.width/2;
-        _oButton.regY = oSprite.height/2;
-        _oButton.cursor = "pointer";
+        _oButton.regX = oSprite.width / 2;
+        _oButton.regY = oSprite.height/  2;
+        _oButton.cursor = 'pointer';
         s_oStage.addChild(_oButton);
-        
         
         this._initListener();
     };

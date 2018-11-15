@@ -31,7 +31,8 @@ function CTextButton(iXPos, iYPos, oSprite, szText, szFont, szColor, iFontSize, 
         _oText = new createjs.Text(szText,  iFontSize + "px " + szFont, szColor);
         _oText.textAlign = "center";
         _oText.textBaseline = "middle";
-        var oBounds = _oText.getBounds();
+        // var oBounds = _oText.getBounds();
+        _oText.getBounds();
         _oText.x = oSprite.width / 2;
         _oText.y = Math.floor((oSprite.height) / 2);
 
@@ -62,11 +63,10 @@ function CTextButton(iXPos, iYPos, oSprite, szText, szFont, szColor, iFontSize, 
     };
 
     this._initListener = function () {
-        // TODO 긴가민가
-        let oParent = this;
-
-        _oButton.on("mousedown", this.buttonDown);
-        _oButton.on("pressup", this.buttonRelease);
+        // TODO (jiwoniy)
+        // let oParent = this;
+        _oButton.on('mousedown', this.buttonDown);
+        _oButton.on('pressup', this.buttonRelease);
     };
 
     this.addEventListener = function (iEvent, cbCompleted, cbOwner) {

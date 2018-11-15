@@ -9,42 +9,48 @@ import {
 
 function CDisplayPanel(iXPos,iYPos,oSprite,szText,szFont,szColor,iFontSize){
     
-    var _bBlock;
+    // var _bBlock;
     
-    var _iScale;
+    // var _iScale;
     
-    var _aCbCompleted;
-    var _aCbOwner;
+    // var _aCbCompleted;
+    // var _aCbOwner;
     var _oPanel;
     var _oText;
     var _oTextBack;
     
     this._init =function(iXPos,iYPos,oSprite,szText,szFont,szColor,iFontSize){
         
-        _bBlock = false;
+        // _bBlock = false;
         
-        _iScale = 1;
+        // _iScale = 1;
         
-        _aCbCompleted = [];
-        _aCbOwner = [];
+        // _aCbCompleted = [];
+        // _aCbOwner = [];
 
         var oButtonBg = createBitmap( oSprite);
 
         var iStepShadow = Math.ceil(iFontSize/20);
 
-        _oTextBack = new createjs.Text(szText,iFontSize+"px "+szFont, "#000000");
-        _oTextBack.textAlign = "center";
-        _oTextBack.textBaseline = "alphabetic";
-        var oBounds = _oTextBack.getBounds();    
+        _oTextBack = new createjs.Text(szText, 
+            // iFontSize+"px "+szFont,
+            `${iFontSize}px ${szFont}`,
+            '#000000');
+        _oTextBack.textAlign = 'center';
+        _oTextBack.textBaseline = 'alphabetic';
+        const textBackBounds = _oTextBack.getBounds();    
         _oTextBack.x = oSprite.width/2 + iStepShadow;
-        _oTextBack.y = Math.floor((oSprite.height)/2) +(oBounds.height/3) + iStepShadow;
+        _oTextBack.y = Math.floor((oSprite.height)/2) +(textBackBounds.height/3) + iStepShadow;
 
-        _oText = new createjs.Text(szText,iFontSize+"px "+szFont, szColor);
+        _oText = new createjs.Text(szText, 
+            // iFontSize+"px "+szFont,
+            `${iFontSize}px ${szFont}`,
+            '#000000');
         _oText.textAlign = "center";
         _oText.textBaseline = "alphabetic";
-        var oBounds = _oText.getBounds();    
+        const testBounds = _oText.getBounds();    
         _oText.x = oSprite.width/2;
-        _oText.y = Math.floor((oSprite.height)/2) +(oBounds.height/3);
+        _oText.y = Math.floor(oSprite.height / 2) +(testBounds.height / 3);
 
         _oPanel = new createjs.Container();
         _oPanel.x = iXPos;
@@ -100,7 +106,7 @@ function CDisplayPanel(iXPos,iYPos,oSprite,szText,szFont,szColor,iFontSize){
     };
 
     this.setScale = function(iVal){
-        _iScale = iVal;
+        // _iScale = iVal;
         _oPanel.scaleX = iVal;
         _oPanel.scaleY = iVal;
     };

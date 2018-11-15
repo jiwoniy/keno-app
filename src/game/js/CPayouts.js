@@ -28,8 +28,8 @@ function CPayouts(iX, iY) {
     var _oTextHits;
     var _oTextPays;
     var _oTextPayouts;
-    var _oHighlightHits;
-    var _oHighlightPays;
+    // var _oHighlightHits;
+    // var _oHighlightPays;
     var _oMoneyText;
     var _oParent;
     

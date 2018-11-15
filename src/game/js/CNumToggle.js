@@ -40,32 +40,43 @@ function CNumToggle(iXPos,iYPos, iNum, oParentContainer){
         _oButton.cursor = "pointer";
         oParentContainer.addChild(_oButton);
         
-        var oSprite = CSpriteLibrary.getSprite('num_button');
-        var oData = {   
-                        images: [oSprite],
-                        framerate: 5,
-                        // width, height & registration point of each sprite
-                        frames: {width: oSprite.width/2, height: oSprite.height, regX: (oSprite.width/2)/2, regY: oSprite.height/2}, 
-                        animations: {state_true:[0],state_false:[1]}
-                   };
+        const numSprite = CSpriteLibrary.getSprite('num_button');
+        // var oData = {   
+        //                 images: [numSprite],
+        //                 framerate: 5,
+        //                 // width, height & registration point of each sprite
+        //                 frames: {width: numSprite.width/2, height: numSprite.height, regX: (numSprite.width/2)/2, regY: numSprite.height/2}, 
+        //                 animations: {state_true:[0],state_false:[1]}
+        //            };
                    
-        var oSpriteSheet = new createjs.SpriteSheet(oData);
+        const numSpriteSheet = new createjs.SpriteSheet({   
+            images: [numSprite],
+            framerate: 5,
+            // width, height & registration point of each sprite
+            frames: {width: numSprite.width/2, height: numSprite.height, regX: (numSprite.width/2)/2, regY: numSprite.height/2}, 
+            animations: {state_true:[0],state_false:[1]}
+       });
          
         _bActive = false;
-        _oButtonBg = createSprite(oSpriteSheet, "state_"+_bActive,(oSprite.width/2)/2,oSprite.height/2,oSprite.width/2,oSprite.height);
+        _oButtonBg = createSprite(numSpriteSheet, "state_"+_bActive,(numSprite.width / 2) / 2, numSprite.height / 2, numSprite.width / 2, numSprite.height);
         _oButtonBg.stop();
         
-        var oSprite = CSpriteLibrary.getSprite('ball');
-        var oData = {   
-                        images: [oSprite], 
-                        // width, height & registration point of each sprite
-                        frames: {width: oSprite.width/settings.NUM_DIFFERENT_BALLS, height: oSprite.height, regX:(oSprite.width/settings.NUM_DIFFERENT_BALLS)/2, regY:oSprite.height/2}, 
-                        animations: {red:[0],green:[1],cyan:[0],violet:[1],blue:[1]}
-                   };
+        const ballSprite = CSpriteLibrary.getSprite('ball');
+        // var oData = {   
+        //                 images: [ballSprite], 
+        //                 // width, height & registration point of each sprite
+        //                 frames: {width: ballSprite.width/settings.NUM_DIFFERENT_BALLS, height: ballSprite.height, regX:(ballSprite.width/settings.NUM_DIFFERENT_BALLS)/2, regY:ballSprite.height/2}, 
+        //                 animations: {red:[0],green:[1],cyan:[0],violet:[1],blue:[1]}
+        //            };
                    
-        var oSpriteSheet = new createjs.SpriteSheet(oData);
+        const BallSpriteSheet = new createjs.SpriteSheet({   
+            images: [ballSprite], 
+            // width, height & registration point of each sprite
+            frames: {width: ballSprite.width/settings.NUM_DIFFERENT_BALLS, height: ballSprite.height, regX:(ballSprite.width/settings.NUM_DIFFERENT_BALLS)/2, regY:ballSprite.height/2}, 
+            animations: {red:[0],green:[1],cyan:[0],violet:[1],blue:[1]}
+       });
         
-        _oExtracted = createSprite(oSpriteSheet, "red",(oSprite.width/settings.NUM_DIFFERENT_BALLS)/2,oSprite.height/2,oSprite.width/settings.NUM_DIFFERENT_BALLS,oSprite.height);//new createBitmap(oSprite);
+        _oExtracted = createSprite(BallSpriteSheet, "red",(ballSprite.width/settings.NUM_DIFFERENT_BALLS)/2,ballSprite.height/2,ballSprite.width/settings.NUM_DIFFERENT_BALLS,ballSprite.height);//new createBitmap(oSprite);
         _oExtracted.gotoAndStop(0);
         _oExtracted.visible = false;
 
