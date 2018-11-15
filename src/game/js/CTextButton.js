@@ -1,16 +1,10 @@
+import $ from 'jquery'
 import createjs from './createjs.js'
 import {
     createBitmap,
     playSound
 } from './ctl_utils.js'
 
-import {
-    s_bMobile,
-} from './CMain.js'
-// import {
-//     ON_MOUSE_UP,
-//     ON_MOUSE_DOWN,
-// } from './settings.js'
 import settings from './settings.js'
 
 function CTextButton(iXPos, iYPos, oSprite, szText, szFont, szColor, iFontSize, oContainer) {
@@ -45,7 +39,7 @@ function CTextButton(iXPos, iYPos, oSprite, szText, szFont, szColor, iFontSize, 
 
         _oContainer.addChild(_oButton);
 
-        if (!s_bMobile)
+        if (!$.browser.mobile)
             _oButton.cursor = "pointer";
 
         this._initListener();

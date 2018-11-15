@@ -4,17 +4,10 @@ import {
 } from './ctl_utils.js'
 import CGfxButton from './CGfxButton.js'
 import CSpriteLibrary from './sprite_lib'
-
-// import CMain from './CMain.js'
 import {
-    s_oStage,
+    mainInstance,
 } from './CMain.js'
-// import {
-//     CANVAS_WIDTH,
-//     CANVAS_HEIGHT,
-//     ON_MOUSE_UP,
-//     SECONDARY_FONT,
-// } from './settings.js'
+
 import settings from './settings.js'
 import {
     TEXT_CREDITS_DEVELOPED
@@ -38,7 +31,7 @@ function CCreditsPanel(){
     
     this._init = function(){
         _oContainer = new createjs.Container();
-        s_oStage.addChild(_oContainer);
+        mainInstance().getStage().addChild(_oContainer);
         
         _oBg = createBitmap(CSpriteLibrary.getSprite('msg_box'));
         _oContainer.addChild(_oBg);
@@ -84,7 +77,7 @@ function CCreditsPanel(){
         _oButExit.unload(); 
         _oButExit = null;
 
-        s_oStage.removeChild(_oContainer);
+        mainInstance().getStage().removeChild(_oContainer);
     };
     
     this._onLogoButRelease = function(){

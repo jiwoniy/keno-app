@@ -4,7 +4,7 @@ import {
     createBitmap,
 } from './ctl_utils.js'
 import {
-    s_oStage,
+    mainInstance,
 } from './CMain.js'
 
 function CDisplayPanel(iXPos,iYPos,oSprite,szText,szFont,szColor,iFontSize){
@@ -59,11 +59,11 @@ function CDisplayPanel(iXPos,iYPos,oSprite,szText,szFont,szColor,iFontSize){
         _oPanel.regY = oSprite.height/2;
         _oPanel.addChild(oButtonBg,_oTextBack,_oText);
 
-        s_oStage.addChild(_oPanel);
+        mainInstance().getStage().addChild(_oPanel);
     };
     
     this.unload = function(){       
-       s_oStage.removeChild(_oPanel);
+        mainInstance().getStage().removeChild(_oPanel);
     };
     
     this.setVisible = function(bVisible){

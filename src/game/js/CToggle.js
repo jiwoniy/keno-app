@@ -3,13 +3,9 @@ import {
     playSound,
     createSprite
 } from './ctl_utils.js'
-// import {
-//     ON_MOUSE_DOWN,
-//     ON_MOUSE_UP,
-// } from './settings.js'
 import settings from './settings.js'
 import {
-    s_oStage,
+    mainInstance,
 } from './CMain.js'
 
 function CToggle(iXPos,iYPos,oSprite,bActive){
@@ -40,7 +36,7 @@ function CToggle(iXPos,iYPos,oSprite,bActive){
         _oButton.y = iYPos; 
         _oButton.stop();
         _oButton.cursor = "pointer";
-        s_oStage.addChild(_oButton);
+        mainInstance().getStage().addChild(_oButton);
         
         this._initListener();
     };
@@ -49,7 +45,7 @@ function CToggle(iXPos,iYPos,oSprite,bActive){
        _oButton.off("mousedown", _oListenerMouseDown);
        _oButton.off("pressup" , _oListenerMouseUp);
 	   
-       s_oStage.removeChild(_oButton);
+       mainInstance().getStage().removeChild(_oButton);
     };
     
     this._initListener = function(){

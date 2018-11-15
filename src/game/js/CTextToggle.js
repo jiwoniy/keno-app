@@ -3,10 +3,6 @@ import {
     createBitmap,
     createSprite,
 } from './ctl_utils.js'
-// import {
-//     ON_MOUSE_UP,
-//     ON_MOUSE_DOWN,
-// } from './settings.js'
 import settings from './settings.js'
 
 function CTextToggle(iXPos,iYPos,oSprite,szText,szFont,szColor,iFontSize, bStandard, oParentContainer){

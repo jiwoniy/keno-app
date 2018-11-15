@@ -1,11 +1,7 @@
 import {
-    s_oStage,
+    mainInstance,
 } from './CMain.js'
 
-// import {
-//     ON_MOUSE_UP,
-//     ON_MOUSE_DOWN,
-// } from './settings.js'
 import settings from './settings.js'
 
 import {
@@ -32,7 +28,7 @@ function CGfxButton(iXPos,iYPos,oSprite){
         _oButton.regX = oSprite.width / 2;
         _oButton.regY = oSprite.height/  2;
         _oButton.cursor = 'pointer';
-        s_oStage.addChild(_oButton);
+        mainInstance().getStage().addChild(_oButton);
         
         this._initListener();
     };
@@ -41,7 +37,7 @@ function CGfxButton(iXPos,iYPos,oSprite){
        _oButton.off("mousedown", _oListenerMouseDown);
        _oButton.off("pressup" , _oListenerMouseUp); 
        
-       s_oStage.removeChild(_oButton);
+       mainInstance().getStage().removeChild(_oButton);
     };
     
     this.setVisible = function(bVisible){

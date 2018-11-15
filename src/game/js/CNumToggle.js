@@ -6,12 +6,7 @@ import {
 } from './ctl_utils.js'
 
 import settings from './settings.js'
-
 import CSpriteLibrary from './sprite_lib'
-// import CMain from './CMain.js'
-// import {
-//     s_oSpriteLibrary
-// } from './CMain.js'
 
 function CNumToggle(iXPos,iYPos, iNum, oParentContainer){
     var _bActive;

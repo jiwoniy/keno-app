@@ -1,7 +1,6 @@
 import $ from 'jquery'
 import { Howl, Howler } from 'howler';
 
-import './detectBrowser.js'
 import createjs from './createjs.js'
 import CSpriteLibrary from './sprite_lib.js'
 import CPreloader from './CPreloader.js'
@@ -12,13 +11,10 @@ import CMenu from './CMenu.js'
 import CGame from './CGame.js'
 
 function CMain (oData) {
-    var _bUpdate;
-    let soundsLoadedCnt = 0;
-    let imagesLoadedCnt = 0;
-    var _iState = settings.STATE_LOADING;
-    // var _oData;
+    // let soundsLoadedCnt = 0;
+    // let imagesLoadedCnt = 0;
+    // var _iState = settings.STATE_LOADING;
     
-    var _oPreloader;
     // var _oMenu;
     // var _oHelp;
     // var _oGame;
@@ -29,24 +25,30 @@ function CMain (oData) {
         loadResources: 0,
         audioActive: true,
         fullScreen: false,
+        bUpdate: null,
+        status: settings.STATE_LOADING,
+        sounds: [],
         menu: null,
+        soundsLoadedCnt: 0,
+        imagesLoadedCnt: 0,
         game: null
     }
 
-    this.s_iCurFps = 0
+    this.oStage = null
 
     // variables that can not be accurately grasp
+    this.s_iCurFps = 0
         
     // _oData = oData;
 
-    this.init = function() {
-        s_oCanvas = document.getElementById('canvas');
-        s_oStage = new createjs.Stage(s_oCanvas);
-        createjs.Touch.enable(s_oStage);
+    this.init = () => {
+        // s_oCanvas = document.getElementById('canvas');
+        this.oStage = new createjs.Stage(document.getElementById('canvas'));
+        createjs.Touch.enable(this.oStage);
 
-        s_bMobile = $.browser.mobile;
-        if(s_bMobile === false) {
-            s_oStage.enableMouseOver(20);  
+        // s_bMobile = $.browser.mobile;
+        if($.browser.mobile === false) {
+            this.oStage.enableMouseOver(20);  
             $('body').on('contextmenu', '#canvas', function(e){ return false; });
         }
 		
@@ -62,28 +64,28 @@ function CMain (oData) {
         // _spriteLibrary  = CSpriteLibrary;
         
         //ADD PRELOADER
-        _oPreloader = new CPreloader({ mainInstance: this });
+        this.preloader = new CPreloader({ parentMainInstance: this });
     };
     
-    this.preloaderReady = function() {
-        if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
+    this.preloaderReady = () => {
+        if(settings.DISABLE_SOUND_MOBILE === false || $.browser.mobile === false){
             this.loadSounds();
         }
         
         this.loadImages();
-        _bUpdate = true;
+        this.state.bUpdate = true;
     };
     
     this._onRemovePreloader = function(){
-        _oPreloader.unload();
+        this.preloader.unload();
         playSound('soundtrack', 1, true);
         // s_oSoundTrack = playSound('soundtrack', 1, true);
         
         this.gotoMenu();
     };
     
-    this.loadSounds = function() {
-        var aSoundsInfo = [];
+    this.loadSounds = () => {
+        const aSoundsInfo = [];
         aSoundsInfo.push({
             path: './sounds/',filename:'launch_ball',loop:false,volume:1, ingamename: 'launch_ball'
         });
@@ -101,22 +103,22 @@ function CMain (oData) {
         });
         
         this.state.loadResources += aSoundsInfo.length;
-        s_aSounds = [];
+        this.state.sounds = [];
 
         for(let i = 0; i < aSoundsInfo.length; i += 1) {
-            s_aSounds[aSoundsInfo[i].ingamename] = new Howl({ 
+            this.state.sounds[aSoundsInfo[i].ingamename] = new Howl({ 
                 src: [aSoundsInfo[i].path+aSoundsInfo[i].filename+'.mp3', aSoundsInfo[i].path+aSoundsInfo[i].filename+'.ogg'],
                 autoplay: false,
                 preload: true,
                 loop: aSoundsInfo[i].loop, 
                 volume: aSoundsInfo[i].volume,
-                onload: mainInstance().soundLoaded
+                onload: this.soundLoaded
             });
         }
     };  
 
-    this.loadImages = function() {
-        CSpriteLibrary.init( this._onImagesLoaded,this._onAllImagesLoaded, this );
+    this.loadImages = () => {
+        CSpriteLibrary.init(this._onImagesLoaded,this._onAllImagesLoaded, this );
         CSpriteLibrary.addSprite("but_play", "./sprites/but_play.png");
         CSpriteLibrary.addSprite("msg_box", "./sprites/msg_box.png");
         
@@ -147,29 +149,35 @@ function CMain (oData) {
         CSpriteLibrary.loadSprites();
     };
 
-    this.soundLoaded = function() {
-        soundsLoadedCnt += 1;
-        _oPreloader.refreshLoader({ sounds: soundsLoadedCnt, images: imagesLoadedCnt });
+    this.soundLoaded = () => {
+        this.state.soundsLoadedCnt += 1;
+        this.preloader.refreshLoader({
+            sounds: this.state.soundsLoadedCnt,
+            images: this.state.imagesLoadedCnt
+        });
     };
     
-    this._onImagesLoaded = function() {
-        imagesLoadedCnt += 1;
-        _oPreloader.refreshLoader({ sounds: soundsLoadedCnt, images: imagesLoadedCnt });
+    this._onImagesLoaded = () => {
+        this.state.imagesLoadedCnt += 1;
+        this.preloader.refreshLoader({
+            sounds: this.state.soundsLoadedCnt,
+            images: this.state.imagesLoadedCnt
+        });
     };
     
     this._onAllImagesLoaded = function(){
     };
 
-    this.gotoMenu = function() {
+    this.gotoMenu = () => {
         this.state.menu = CMenu(true);
-        _iState = settings.STATE_MENU;
+        this.state.status = settings.STATE_MENU;
     };
 
-    this.gotoGame = function() {
+    this.gotoGame = () => {
         this.state.game = new CGame(true, this.state.initData);   						
-        _iState = settings.STATE_GAME;
+        this.state.status = settings.STATE_MENU;
 
-        $(mainInstance()).trigger("game_start");
+        $(this).trigger("game_start");
     };
 
     this.getAudioActive = function () {
@@ -187,18 +195,26 @@ function CMain (oData) {
     this.setFullScreen = function (value) {
         this.state.fullScreen = value
     }
+
+    this.getStage = function () {
+        return this.oStage;
+    }
+
+    this.getSounds = function () {
+        return this.state.sounds;
+    }
     
     // this.gotoHelp = function(){
     //     _oHelp = new CHelp();
     //     _iState = STATE_HELP;
     // };
 	
-    this.stopUpdate = function() {
-        _bUpdate = false;
+    this.stopUpdate = () => {
+        this.state.bUpdate = false;
         createjs.Ticker.paused = true;
         $("#block_game").css("display","block");
         
-        if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
+        if(settings.DISABLE_SOUND_MOBILE === false || $.browser.mobile === false){
             Howler.mute(true);
         }
         
@@ -206,11 +222,11 @@ function CMain (oData) {
 
     this.startUpdate = function() {
         s_iPrevTime = new Date().getTime();
-        _bUpdate = true;
+        this.state.bUpdate = true;
         createjs.Ticker.paused = false;
         $("#block_game").css("display","none");
         
-        if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
+        if(settings.DISABLE_SOUND_MOBILE === false || $.browser.mobile === false){
             if(this.state.audioActive){
                 Howler.mute(false);
             }
@@ -219,7 +235,7 @@ function CMain (oData) {
     };
     
     this.ticker = (event) => {
-        if(_bUpdate === false) {
+        if(this.state.bUpdate === false) {
              return;
         }
         const iCurTime = new Date().getTime();
@@ -234,11 +250,12 @@ function CMain (oData) {
             s_iCntFps = 0;
         }
                 
-        if(_iState === settings.STATE_GAME) {
+        if(this.state.status === settings.STATE_GAME) {
             this.state.game.update();
         }
         
-        s_oStage.update(event);
+        // s_oStage.update(event);
+        this.oStage.update(event);
 
     };
     // s_oMain = this;
@@ -251,22 +268,10 @@ function CMain (oData) {
     this.init();
 }
 
-var s_bMobile;
 var s_iCntTime = 0;
 var s_iTimeElaps = 0;
 var s_iPrevTime = 0;
 var s_iCntFps = 0;
-// var s_iCurFps = 0;
-
-// var s_oDrawLayer;
-var s_oStage;
-// var s_oMain;
-// var s_oSpriteLibrary;
-// var s_oSoundTrack = null;
-var s_oCanvas;
-var s_aSounds;
-
-// var s_bFullscreen = false;
 
 const Singleton = (() => {
     let instance = null;
@@ -289,10 +294,4 @@ const mainInstance = () => Singleton.getInstance(false)
 export default Singleton.getInstance;
 export {
     mainInstance,
-    s_oStage,
-    s_bMobile,
-    // s_oMain,
-    s_aSounds,
-    // s_oSpriteLibrary,
-    // s_bFullscreen,
 } 

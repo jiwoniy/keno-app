@@ -15,22 +15,9 @@ import CToggle from './CToggle.js'
 import CCreditsPanel from './CCreditsPanel.js'
 
 import CSpriteLibrary from './sprite_lib'
-// import CMain from './CMain.js'
 import {
     mainInstance,
-    s_bMobile,
-    s_oStage,
-    // s_oSpriteLibrary,
-    // s_bFullscreen,
 } from './CMain.js'
-// import {
-//     CANVAS_WIDTH,
-//     CANVAS_HEIGHT,
-//     ON_MOUSE_UP,
-//     ENABLE_FULLSCREEN,
-//     DISABLE_SOUND_MOBILE,
-//     SHOW_CREDITS
-// } from './settings.js'
 import settings from './settings.js'
 
 function CMenu() {
@@ -49,13 +36,13 @@ function CMenu() {
     
     this.init = function() {
         _oBg = createBitmap(CSpriteLibrary.getSprite('bg_menu'));
-        s_oStage.addChild(_oBg);
+        mainInstance().getStage().addChild(_oBg);
 
         const butPlaySprite = CSpriteLibrary.getSprite('but_play');
         _oButPlay = new CGfxButton((settings.CANVAS_WIDTH / 2), settings.CANVAS_HEIGHT -200, butPlaySprite);
         _oButPlay.addEventListener(settings.ON_MOUSE_UP, this._onButPlayRelease, this);
     
-        if (settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
+        if (settings.DISABLE_SOUND_MOBILE === false || $.browser.mobile === false){
             const audioIconSprite = CSpriteLibrary.getSprite('audio_icon');
             _pStartPosAudio = {x: settings.CANVAS_WIDTH - (audioIconSprite.height / 2)- 10, y: (audioIconSprite.height / 2) + 10};            
             _oAudioToggle = new CToggle(_pStartPosAudio.x, _pStartPosAudio.y, audioIconSprite, mainInstance().getAudioActive());
@@ -63,13 +50,13 @@ function CMenu() {
         }
         
         const butInfoSprite = CSpriteLibrary.getSprite('but_info');
-        if(settings.SHOW_CREDITS){
+        if(settings.SHOW_CREDITS) {
             _pStartPosCredits = {x:10 + butInfoSprite.width / 2,y:(butInfoSprite.height / 2) + 10};
-            _oButCredits = new CGfxButton(_pStartPosCredits.x, _pStartPosCredits.y, butInfoSprite, s_oStage);
+            _oButCredits = new CGfxButton(_pStartPosCredits.x, _pStartPosCredits.y, butInfoSprite, mainInstance().getStage());
             _oButCredits.addEventListener(settings.ON_MOUSE_UP, this._onCredits, this);
             
             _pStartPosFullscreen = {x: _pStartPosCredits.x + butInfoSprite.width + 10, y: _pStartPosCredits.y};
-        }else{
+        } else {
             _pStartPosFullscreen = {x: 10 + (butInfoSprite.width / 2),y: (butInfoSprite.height / 2) + 10};
         }
         
@@ -78,11 +65,11 @@ function CMenu() {
         _fRequestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
         _fCancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
         
-        if(settings.ENABLE_FULLSCREEN === false){
+        if(settings.ENABLE_FULLSCREEN === false) {
             _fRequestFullScreen = false;
         }
         
-        if (_fRequestFullScreen && screenfull.enabled){
+        if (_fRequestFullScreen && screenfull.enabled) {
             const butFullScreenSprite = CSpriteLibrary.getSprite('but_fullscreen');
 
             _oButFullscreen = new CToggle(_pStartPosFullscreen.x,_pStartPosFullscreen.y, butFullScreenSprite, mainInstance().getAudioActive(), true);
@@ -92,7 +79,7 @@ function CMenu() {
         _oFade = new createjs.Shape();
         _oFade.graphics.beginFill("black").drawRect(0,0,settings.CANVAS_WIDTH,settings.CANVAS_HEIGHT);
         
-        s_oStage.addChild(_oFade);
+        mainInstance().getStage().addChild(_oFade);
         
         createjs.Tween.get(_oFade).to({alpha:0}, 1000).call(function(){_oFade.visible = false;});  
         
@@ -104,34 +91,33 @@ function CMenu() {
         _oButPlay = null;
         _oFade.visible = false;
         
-        if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
+        if(settings.DISABLE_SOUND_MOBILE === false || $.browser.mobile === false) {
             _oAudioToggle.unload();
             _oAudioToggle = null;
         }
         
-        if (_fRequestFullScreen && screenfull.enabled){
+        if (_fRequestFullScreen && screenfull.enabled) {
             _oButFullscreen.unload();
         }
         
-        if(settings.SHOW_CREDITS){
+        if(settings.SHOW_CREDITS) {
             _oButCredits.unload();
         }
         
-        s_oStage.removeChild(_oBg);
+        mainInstance().getStage().removeChild(_oBg);
         _oBg = null;
-        // s_oMenu = null;
     };
     
-    this.refreshButtonPos = function(iNewX,iNewY){
-        if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
+    this.refreshButtonPos = function(iNewX,iNewY) {
+        if(settings.DISABLE_SOUND_MOBILE === false || $.browser.mobile === false) {
             _oAudioToggle.setPosition(_pStartPosAudio.x - iNewX,iNewY + _pStartPosAudio.y);
         }
         
-        if(settings.SHOW_CREDITS){
+        if(settings.SHOW_CREDITS) {
             _oButCredits.setPosition(_pStartPosCredits.x + iNewX,_pStartPosCredits.y + iNewY);
         }
         
-        if (_fRequestFullScreen && screenfull.enabled){
+        if (_fRequestFullScreen && screenfull.enabled) {
             _oButFullscreen.setPosition(_pStartPosFullscreen.x + iNewX,_pStartPosFullscreen.y + iNewY);
         }
     };
@@ -149,7 +135,7 @@ function CMenu() {
     };
     
     this.resetFullscreenBut = function() {
-        if (_fRequestFullScreen && screenfull.enabled){
+        if (_fRequestFullScreen && screenfull.enabled) {
             _oButFullscreen.setActive(mainInstance().getAudioActive());
         }
     };
@@ -169,9 +155,6 @@ function CMenu() {
         // var _oCreditsPanel = new CCreditsPanel();
         new CCreditsPanel();
     };
-    // console.log(s_oMenu)
-    // console.log(this)
-    // s_oMenu = this;
     
     this.init();
 }
@@ -197,5 +180,9 @@ const Singleton = (() => {
       },
     };
 })();
+const menuInstance = () => Singleton.getInstance(false)
 
 export default Singleton.getInstance;
+export {
+    menuInstance
+}

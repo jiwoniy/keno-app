@@ -2,16 +2,11 @@ import createjs from './createjs.js'
 import {
     createBitmap,
 } from './ctl_utils.js'
-// import {
-//     PRIMARY_FONT,
-//     payOuts
-// } from './settings.js'
 import settings from './settings.js'
 
 import CSpriteLibrary from './sprite_lib'
 import {
-    s_oStage,
-    // s_oSpriteLibrary,
+    mainInstance,
 } from './CMain.js'
 import {
     TEXT_CURRENCY,
@@ -43,7 +38,7 @@ function CPayouts(iX, iY) {
         _oPanel = new createjs.Container();
         _oPanel.x = iX;
         _oPanel.y = iY;
-        s_oStage.addChild(_oPanel);
+        mainInstance().getStage().addChild(_oPanel);
         
         var oBg = createBitmap(CSpriteLibrary.getSprite('payouts'));
         
@@ -110,7 +105,7 @@ function CPayouts(iX, iY) {
     };    
     
     this.unload = function(){
-        s_oStage.removeChild(_oPanel);
+        mainInstance().getStage().removeChild(_oPanel);
     };
     
     this.updatePayouts = function(iVal) {

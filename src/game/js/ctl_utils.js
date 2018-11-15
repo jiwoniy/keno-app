@@ -5,17 +5,13 @@ import screenfull from './screenfull.js'
 import settings from './settings.js'
 
 import { 
-    s_oMenu
-} from './global.js'
+    menuInstance
+} from './CMenu.js'
 import {
     interfaceInstance
 } from './CInterface.js'
-
 import {
-    s_oStage,
-    s_bMobile,
     mainInstance,
-    s_aSounds,
 } from './CMain.js'
 
 var s_iScaleFactor = 1;
@@ -211,22 +207,22 @@ function sizeHandler() {
         
     if (s_bIsIphone){
         const canvas = document.getElementById('canvas');
-        s_oStage.canvas.width = destW*2;
-        s_oStage.canvas.height = destH*2;
+        mainInstance().getStage().canvas.width = destW*2;
+        mainInstance().getStage().canvas.height = destH*2;
         canvas.style.width = destW+"px";
         canvas.style.height = destH+"px";
         var iScale = Math.min(destW / settings.CANVAS_WIDTH, destH / settings.CANVAS_HEIGHT);
         s_iScaleFactor = iScale*2;
-        s_oStage.scaleX = s_oStage.scaleY = s_iScaleFactor;  
-    } else if(s_bMobile || isChrome()){
+        mainInstance().getStage().scaleX = mainInstance().getStage().scaleY = s_iScaleFactor;  
+    } else if($.browser.mobile || isChrome()){
         $("#canvas").css("width",destW+"px");
         $("#canvas").css("height",destH+"px");
     } else{
-        s_oStage.canvas.width = destW;
-        s_oStage.canvas.height = destH;
+        mainInstance().getStage().canvas.width = destW;
+        mainInstance().getStage().canvas.height = destH;
 
         s_iScaleFactor = Math.min(destW / settings.CANVAS_WIDTH, destH / settings.CANVAS_HEIGHT);
-        s_oStage.scaleX = s_oStage.scaleY = s_iScaleFactor; 
+        mainInstance().getStage().scaleX = mainInstance().getStage().scaleY = s_iScaleFactor; 
     }
         
         
@@ -241,7 +237,7 @@ function sizeHandler() {
 };
 
 function _checkOrientation(iWidth, iHeight){
-    if(s_bMobile && settings.ENABLE_CHECK_ORIENTATION){
+    if($.browser.mobile && settings.ENABLE_CHECK_ORIENTATION){
         if(iWidth > iHeight){ 
             if( $(".orientation-msg-container").attr("data-orientation") === "landscape" ){
                 $(".orientation-msg-container").css("display","none");
@@ -263,13 +259,13 @@ function _checkOrientation(iWidth, iHeight){
 }
 
 function playSound(szSound, iVolume, bLoop) {
-    if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false) {
-        s_aSounds[szSound].play();
-        s_aSounds[szSound].volume(iVolume);
+    if(settings.DISABLE_SOUND_MOBILE === false || $.browser.mobile === false) {
+        mainInstance().getSounds()[szSound].play();
+        mainInstance().getSounds()[szSound].volume(iVolume);
 
-        s_aSounds[szSound].loop(bLoop);
+        mainInstance().getSounds()[szSound].loop(bLoop);
 
-        return s_aSounds[szSound];
+        return mainInstance().getSounds()[szSound];
     }
     return null;
 }
@@ -738,8 +734,8 @@ function fullscreenHandler(){
         interfaceInstance().resetFullscreenBut();
     }
 
-    if (s_oMenu !== null){
-        s_oMenu.resetFullscreenBut();
+    if (menuInstance() !== null){
+        menuInstance().resetFullscreenBut();
     }
 
 }
@@ -754,8 +750,8 @@ if (screenfull.enabled) {
             interfaceInstance().resetFullscreenBut();
         }
 
-        if (s_oMenu !== null){
-            s_oMenu.resetFullscreenBut();
+        if (menuInstance() !== null){
+            menuInstance().resetFullscreenBut();
         } 
     });
 }

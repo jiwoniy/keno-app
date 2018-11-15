@@ -1,4 +1,5 @@
 import $ from 'jquery'
+
 import createjs from './createjs.js'
 import {
     createBitmap,
@@ -8,7 +9,6 @@ import {
 import CSpriteLibrary from './sprite_lib'
 import {
     mainInstance,
-    s_oStage,
 } from './CMain.js'
 
 import settings from './settings.js'
@@ -63,14 +63,14 @@ function CGame(oData) {
         _aListSelected = [];
         
         // var oBg = createBitmap(CSpriteLibrary.getSprite('bg_game'));
-        s_oStage.addChild(createBitmap(CSpriteLibrary.getSprite('bg_game'))); 
+        mainInstance().getStage().addChild(createBitmap(CSpriteLibrary.getSprite('bg_game'))); 
         _oInterface = new CInterface(true);
         _oInterface.refreshBet(_iCurBet);           
  
         _oCellContainer = new createjs.Container();
         _oCellContainer.x = settings.CANVAS_WIDTH/2;
         _oCellContainer.y = settings.CANVAS_HEIGHT/2;
-        s_oStage.addChild(_oCellContainer);
+        mainInstance().getStage().addChild(_oCellContainer);
 
         this._initCells();        
 
@@ -82,7 +82,7 @@ function CGame(oData) {
         oHole.regY = holeSprite.height / 2;
         oHole.x = 365;
         oHole.y = 750;
-        s_oStage.addChild(oHole);
+        mainInstance().getStage().addChild(oHole);
 
         _oAnimBalls = new CAnimBalls(365, 260);
         
@@ -90,13 +90,13 @@ function CGame(oData) {
         const oTube = createBitmap(CSpriteLibrary.getSprite('tube'));
         oTube.x = 315;
         oTube.y = 205;
-        s_oStage.addChild(oTube);
+        mainInstance().getStage().addChild(oTube);
         
         var graphics = new createjs.Graphics().beginFill("rgba(158,158,158,0.01)").drawRect(0, 200, settings.CANVAS_WIDTH, settings.CANVAS_HEIGHT-200);
         _oBlockScreen = new createjs.Shape(graphics);
         _oBlockScreen.on("click", function(){});
         _oBlockScreen.visible = false;
-        s_oStage.addChild(_oBlockScreen);
+        mainInstance().getStage().addChild(_oBlockScreen);
 
 		if(_iCurBet>_iCurPlayerMoney){
                 for(var i=0; i<80; i++){
@@ -134,7 +134,7 @@ function CGame(oData) {
         oNumber.regY = numberSprite.height / 2;
         oNumber.x = (settings.CANVAS_WIDTH / 2) - 35;
         oNumber.y = (settings.CANVAS_HEIGHT / 2) + 10;
-        s_oStage.addChild(oNumber);
+        mainInstance().getStage().addChild(oNumber);
 
     };
     
@@ -526,7 +526,7 @@ function CGame(oData) {
         }
         
         createjs.Tween.removeAllTweens();
-        s_oStage.removeAllChildren();
+        mainInstance().getStage().removeAllChildren();
 
     };
  

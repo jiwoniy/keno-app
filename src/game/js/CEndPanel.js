@@ -1,9 +1,8 @@
 import $ from 'jquery'
+
 import createjs from './createjs.js'
 import {
     mainInstance,
-    // s_oMain,
-    s_oStage,
 } from './CMain.js'
 import {
     gameInstance,
@@ -12,11 +11,6 @@ import {
     createBitmap,
     playSound
 } from './ctl_utils.js'
-// import {
-//     PRIMARY_FONT,
-//     CANVAS_WIDTH,
-//     CANVAS_HEIGHT,
-// } from './settings.js'
 import settings from './settings.js'
 import {
     TEXT_GAMEOVER,
@@ -57,7 +51,7 @@ function CEndPanel(oSpriteBg){
         
         _oGroup.addChild(_oBg,_oMsgTextBack,_oMsgText);
 
-        s_oStage.addChild(_oGroup);
+        mainInstance().getStage().addChild(_oGroup);
     };
     
     this.unload = function(){
@@ -83,7 +77,7 @@ function CEndPanel(oSpriteBg){
     
     this._onExit = function(){
         _oGroup.off("mousedown",_oListener);
-        s_oStage.removeChild(_oGroup);
+        mainInstance().getStage().removeChild(_oGroup);
         
         $(mainInstance).trigger("end_session");
         

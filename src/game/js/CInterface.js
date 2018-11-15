@@ -12,10 +12,6 @@ import CSpriteLibrary from './sprite_lib'
 
 import {
     mainInstance,
-    // s_oMain,
-    s_bMobile,
-    s_oStage,
-    // s_oSpriteLibrary,
 } from './CMain.js'
 import settings from './settings.js'
 import {
@@ -67,7 +63,7 @@ function CInterface() {
         oExitX = settings.CANVAS_WIDTH - (closeSprite.width / 2) - 100;
         _pStartPosAudio = {x: oExitX-15, y: (closeSprite.height / 2) + 10};
         
-        if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false) {
+        if(settings.DISABLE_SOUND_MOBILE === false || $.browser.mobile === false) {
             const audioSprite = CSpriteLibrary.getSprite('audio_icon');
             _oAudioToggle = new CToggle(_pStartPosAudio.x,_pStartPosAudio.y, audioSprite, mainInstance().getAudioActive());
             _oAudioToggle.addEventListener(settings.ON_MOUSE_UP, this._onAudioToggle, this);          
@@ -94,36 +90,36 @@ function CInterface() {
         _oMoneyDisplay = new CDisplayPanel(370, settings.CANVAS_HEIGHT - 225, moneyPanelSprite,TEXT_CURRENCY + settings.START_PLAYER_MONEY, settings.PRIMARY_FONT, "#ffffff", 40);
 
         const plusDispalySprite = CSpriteLibrary.getSprite('plus_display');
-        _oBetDisplay = new CDisplayPanel(480, settings.CANVAS_HEIGHT - 130, plusDispalySprite, '$1', settings.PRIMARY_FONT, '#ffffff', 40, false, s_oStage);
+        _oBetDisplay = new CDisplayPanel(480, settings.CANVAS_HEIGHT - 130, plusDispalySprite, '$1', settings.PRIMARY_FONT, '#ffffff', 40, false, mainInstance().getStage());
         _oBetDisplay.setTextPosition(51);
 
         const butPlusSprite = CSpriteLibrary.getSprite('but_plus');
-        _oButPlus = new CTextToggle(638, settings.CANVAS_HEIGHT - 130, butPlusSprite, TEXT_PLUS, settings.PRIMARY_FONT, '#ffffff', 70, false, s_oStage);
+        _oButPlus = new CTextToggle(638, settings.CANVAS_HEIGHT - 130, butPlusSprite, TEXT_PLUS, settings.PRIMARY_FONT, '#ffffff', 70, false, mainInstance().getStage());
         _oButPlus.enable();
         _oButPlus.setTextPosition(0,20);
         _oButPlus.addEventListener(settings.ON_MOUSE_UP, this._onButPlusRelease, this);
 
         // const butPlusSprite = CSpriteLibrary.getSprite('but_plus');
-        _oButMin = new CTextToggle(320, settings.CANVAS_HEIGHT - 130, butPlusSprite, TEXT_MIN, settings.PRIMARY_FONT, '#ffffff', 70, false, s_oStage);
+        _oButMin = new CTextToggle(320, settings.CANVAS_HEIGHT - 130, butPlusSprite, TEXT_MIN, settings.PRIMARY_FONT, '#ffffff', 70, false, mainInstance().getStage());
         _oButMin.enable();
         _oButMin.setTextPosition(0,20);
         _oButMin.setScaleX(-1);
         _oButMin.addEventListener(settings.ON_MOUSE_UP, this._onButMinRelease, this);
 
         const butGenericSprite = CSpriteLibrary.getSprite('but_generic');
-        _oButPlay1 = new CTextToggle(820, settings.CANVAS_HEIGHT - 130, butGenericSprite, TEXT_PLAY1, settings.PRIMARY_FONT, '#ffffff',30, false, s_oStage);
+        _oButPlay1 = new CTextToggle(820, settings.CANVAS_HEIGHT - 130, butGenericSprite, TEXT_PLAY1, settings.PRIMARY_FONT, '#ffffff',30, false, mainInstance().getStage());
         _oButPlay1.disable();
         _oButPlay1.setTextPosition(0,10);
         _oButPlay1.addEventListener(settings.ON_MOUSE_UP, this._onPlay1, this);
         
         // var oSprite = CSpriteLibrary.getSprite('but_generic');
-        _oButPlay5 = new CTextToggle(1060, settings.CANVAS_HEIGHT - 130, butGenericSprite, TEXT_PLAY5, settings.PRIMARY_FONT, '#ffffff',30, false, s_oStage);
+        _oButPlay5 = new CTextToggle(1060, settings.CANVAS_HEIGHT - 130, butGenericSprite, TEXT_PLAY5, settings.PRIMARY_FONT, '#ffffff',30, false, mainInstance().getStage());
         _oButPlay5.disable();
         _oButPlay5.setTextPosition(0,10);
         _oButPlay5.addEventListener(settings.ON_MOUSE_UP, this._onPlay5, this);
 
         // var oSprite = CSpriteLibrary.getSprite('but_generic');
-        _oButUndo = new CTextToggle(1300, settings.CANVAS_HEIGHT - 130, butGenericSprite, TEXT_UNDO,settings.PRIMARY_FONT, '#ffffff', 30, false, s_oStage);
+        _oButUndo = new CTextToggle(1300, settings.CANVAS_HEIGHT - 130, butGenericSprite, TEXT_UNDO,settings.PRIMARY_FONT, '#ffffff', 30, false, mainInstance().getStage());
         _oButUndo.enable();
         _oButUndo.setTextPosition(0,10);
         _oButUndo.addEventListener(settings.ON_MOUSE_UP, this._onUndo, this);
@@ -137,7 +133,7 @@ function CInterface() {
             '#ffffff',
             30,
             false,
-            s_oStage);
+            mainInstance().getStage());
         _oButClear.enable();
         _oButClear.setTextPosition(0,10);
         _oButClear.addEventListener(settings.ON_MOUSE_UP, this._onClear, this);
@@ -146,7 +142,7 @@ function CInterface() {
     };
     
     this.unload = function() {
-        if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
+        if(settings.DISABLE_SOUND_MOBILE === false || $.browser.mobile === false){
             _oAudioToggle.unload();
             _oAudioToggle = null;
         }
@@ -169,7 +165,7 @@ function CInterface() {
     
     this.refreshButtonPos = function(iNewX,iNewY) {
         _oButExit.setPosition(_pStartPosExit.x - iNewX,iNewY + _pStartPosExit.y);
-        if(settings.DISABLE_SOUND_MOBILE === false || s_bMobile === false){
+        if(settings.DISABLE_SOUND_MOBILE === false || $.browser.mobile === false){
             _oAudioToggle.setPosition(_pStartPosAudio.x - iNewX,iNewY + _pStartPosAudio.y);
         }
         if (_fRequestFullScreen && screenfull.enabled){

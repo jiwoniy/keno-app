@@ -4,20 +4,14 @@ import {
     createSprite,
     playSound,
 } from './ctl_utils.js'
-// import {
-//     NUM_DIFFERENT_BALLS,
-//     ANIMATION_SPEED,
-// } from './settings.js'
 import settings from './settings.js'
-// import CMain from './CMain.js'
+import CSpriteLibrary from './sprite_lib'
 import {
-    s_oStage,
-    // s_oSpriteLibrary,
+    mainInstance,
 } from './CMain.js'
 import {
     gameInstance
 } from './CGame'
-import CSpriteLibrary from './sprite_lib'
 
 function CAnimBalls(iX, iY){
     
@@ -73,7 +67,7 @@ function CAnimBalls(iX, iY){
         }
         
         for(let i=0; i<28; i++){
-            s_oStage.addChild(_aBall[28-i-1]);
+            mainInstance().getStage().addChild(_aBall[28-i-1]);
         }
         
         
@@ -83,7 +77,7 @@ function CAnimBalls(iX, iY){
     
     this.unload = function(){
         for(var i=0; i<26; i++){
-            s_oStage.removeChild(_aBall[i]);
+            mainInstance().getStage().removeChild(_aBall[i]);
         }
     };
     
@@ -152,6 +146,7 @@ function CAnimBalls(iX, iY){
     };
     
     _oParent = this;
+
     this._init(iX, iY);
 } 
 

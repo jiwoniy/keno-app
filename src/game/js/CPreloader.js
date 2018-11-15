@@ -2,29 +2,14 @@ import createjs from './createjs.js'
 import {
     createBitmap
 } from './ctl_utils.js'
-
-import CTextButton from './CTextButton.js'
 import CSpriteLibrary from './sprite_lib'
-import {
-    // s_oMain,
-    s_oStage,
-    // s_oSpriteLibrary
-} from './CMain.js'
-
 import settings from './settings.js'
-// import {
-//     CANVAS_WIDTH,
-//     CANVAS_HEIGHT,
-//     PRIMARY_FONT,
-//     PRIMARY_FONT_COLOUR,
-//     ON_MOUSE_UP,
-// } from './settings.js'
-
+import CTextButton from './CTextButton.js'
 import {
     TEXT_PRELOADER_CONTINUE,
 } from './CLang.js'
 
-function CPreloader ({ mainInstance }) {
+function CPreloader ({ parentMainInstance }) {
     var _iMaskWidth;
     var _iMaskHeight;
     var _oLoadingText;
@@ -45,7 +30,7 @@ function CPreloader ({ mainInstance }) {
         CSpriteLibrary.loadSprites();
 
         _oContainer = new createjs.Container();
-        s_oStage.addChild(_oContainer);
+        parentMainInstance.getStage().addChild(_oContainer);
     };
 
     this.unload = function () {
@@ -58,7 +43,7 @@ function CPreloader ({ mainInstance }) {
 
     this._onAllImagesLoaded = function () {
         this.attachSprites();
-        mainInstance.preloaderReady();
+        parentMainInstance.preloaderReady();
     };
 
     this.attachSprites = function () {
@@ -118,7 +103,7 @@ function CPreloader ({ mainInstance }) {
     };
 
     this._onButStartRelease = function(){
-        mainInstance._onRemovePreloader();
+        parentMainInstance._onRemovePreloader();
     };
 
     this.refreshLoader = function ({ sounds = 0, images = 0 }) {

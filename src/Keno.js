@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import $ from 'jquery'
 
+import './game/js/detectBrowser.js'
 import CMain from './game/js/CMain.js'
 import {
   getParamValue,
