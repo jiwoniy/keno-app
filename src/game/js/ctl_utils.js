@@ -343,14 +343,12 @@ function createSprite(oSpriteSheet, szState, iRegX, iRegY, iWidth, iHeight) {
 // }
 
 function shuffle(array) {
-  var currentIndex = array.length
-    , temporaryValue
-    , randomIndex
-    ;
+  let currentIndex = array.length
+  let temporaryValue = null
+  let randomIndex = null
 
   // While there remain elements to shuffle...
   while (0 !== currentIndex) {
-
     // Pick a remaining element...
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex -= 1;

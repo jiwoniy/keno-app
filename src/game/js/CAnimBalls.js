@@ -27,7 +27,7 @@ function CAnimBalls(iX, iY) {
     
     this.initAnimalBalls = function(iX, iY) {
         
-        _iTimeAnim = settings.ANIMATION_SPEED;
+        _iTimeAnim = settings.getAnimationSpeed();
         _iLastBall = 7;
         
         const ballSprite = CSpriteLibrary.getSprite('ball');

@@ -150,11 +150,11 @@ function CPayouts(iX, iY) {
         if (_iCurAlpha === 1) {
             _iCurAlpha = 0;
             createjs.Tween.get(this.state.hitsText[iIndex]).to({alpha:_iCurAlpha }, 250,createjs.Ease.cubicOut);
-            createjs.Tween.get(this.state.paysText[iIndex]).to({alpha:_iCurAlpha }, 250,createjs.Ease.cubicOut).call(this, function() {this._flicker(iIndex); });
+            createjs.Tween.get(this.state.paysText[iIndex]).to({alpha:_iCurAlpha }, 250,createjs.Ease.cubicOut).call(() => {this._flicker(iIndex); });
         } else {
             _iCurAlpha = 1;
             createjs.Tween.get(this.state.hitsText[iIndex]).to({alpha:_iCurAlpha }, 250,createjs.Ease.cubicOut);
-            createjs.Tween.get(this.state.paysText[iIndex]).to({alpha:_iCurAlpha }, 250,createjs.Ease.cubicOut).call(this, function(){ this._flicker(iIndex); });
+            createjs.Tween.get(this.state.paysText[iIndex]).to({alpha:_iCurAlpha }, 250,createjs.Ease.cubicOut).call(() => { this._flicker(iIndex); });
         }
     };
     

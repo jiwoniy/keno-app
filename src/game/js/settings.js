@@ -25,7 +25,8 @@ const settings = () => {
   var ON_DRAG_END    = 5;
 
   var NUM_DIFFERENT_BALLS = 5;
-  var ANIMATION_SPEED;
+  // var ANIMATION_SPEED;
+  let animationSpeend = null
 
   // var WIN_OCCURRENCE = new Array();
   // var WIN_OCCURRENCE = [];
@@ -75,7 +76,11 @@ const settings = () => {
     ON_DRAG_END,
 
     NUM_DIFFERENT_BALLS,
-    ANIMATION_SPEED,
+    // ANIMATION_SPEED,
+    getAnimationSpeed: () => animationSpeend,
+    setAnimationSpeed: (value) => {
+      animationSpeend = value
+    },
 
     // WIN_OCCURRENCE,
     // PAYOUTS,
