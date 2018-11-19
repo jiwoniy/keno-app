@@ -49,14 +49,14 @@ var fn = (function () {
 		]
 	];
 
-	var i = 0;
-	var l = fnMap.length;
-	var ret = {};
+	let i = 0;
+	const l = fnMap.length;
+	const ret = {};
 
-	for (; i < l; i++) {
+	for (; i < l; i += 1) {
 		val = fnMap[i];
 		if (val && val[1] in document) {
-			for (i = 0; i < val.length; i++) {
+			for (i = 0; i < val.length; i += 1) {
 				ret[fnMap[0][i]] = val[i];
 			}
 			return ret;

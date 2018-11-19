@@ -35,6 +35,7 @@ function CMain (oData) {
     }
 
     this.oStage = null
+    this.preloader = null
 
     // variables that can not be accurately grasp
     this.s_iCurFps = 0
@@ -76,7 +77,7 @@ function CMain (oData) {
         this.state.bUpdate = true;
     };
     
-    this._onRemovePreloader = function(){
+    this._onRemovePreloader = () => {
         this.preloader.unload();
         playSound('soundtrack', 1, true);
         // s_oSoundTrack = playSound('soundtrack', 1, true);
@@ -220,7 +221,7 @@ function CMain (oData) {
         
     };
 
-    this.startUpdate = function() {
+    this.startUpdate = () => {
         s_iPrevTime = new Date().getTime();
         this.state.bUpdate = true;
         createjs.Ticker.paused = false;
@@ -294,4 +295,4 @@ const mainInstance = () => Singleton.getInstance(false)
 export default Singleton.getInstance;
 export {
     mainInstance,
-} 
+}

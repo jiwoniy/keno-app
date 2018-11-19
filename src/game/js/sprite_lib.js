@@ -70,7 +70,6 @@ const Singleton = (() => {
   
     return {
       getInstance() {
-
         if (!instance) {
           instance = createInstance();
         }

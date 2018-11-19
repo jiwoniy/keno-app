@@ -11,7 +11,7 @@ import {
 } from './CMain.js'
 import {
     gameInstance
-} from './CGame'
+} from './CGame.js'
 
 function CAnimBalls(iX, iY) {
     

@@ -26,15 +26,19 @@ function CPayouts(iX, iY) {
     // var _oHighlightHits;
     // var _oHighlightPays;
     var _oMoneyText;
-    var _oParent;
+    // var _oParent;
     
     var _aPayoutsPosY;
-    var _aHitsText;
-    var _aPaysText;
+    // var _aHitsText;
+    // var _aPaysText;
+
+    this.state = {
+        hitsText: [],
+        paysText: []
+    }
     
   
-    this._init = function(iX, iY){
-        
+    this._init = (iX, iY) => {
         _oPanel = new createjs.Container();
         _oPanel.x = iX;
         _oPanel.y = iY;
@@ -75,24 +79,24 @@ function CPayouts(iX, iY) {
         
         var iOffset = 50;
         _aPayoutsPosY = [];
-        _aHitsText = [];
-        _aPaysText = [];
-        for(let i=0; i<6; i++){
-            _aPayoutsPosY[i] = 190 + i* iOffset;
+        // _aHitsText = [];
+        // _aPaysText = [];
+        for(let i = 0; i < 6; i += 1) {
+            _aPayoutsPosY[i] = 190 + (i * iOffset);
             
-            _aHitsText[i] = new createjs.Text("-","36px "+settings.PRIMARY_FONT, "#ffffff");
-            _aHitsText[i].x = iHitsX;
-            _aHitsText[i].y = _aPayoutsPosY[i];
-            _aHitsText[i].textAlign = "center";
-            _aHitsText[i].textBaseline = "middle";  
-            _oPanel.addChild(_aHitsText[i]);
+            this.state.hitsText[i] = new createjs.Text("-","36px "+settings.PRIMARY_FONT, "#ffffff");
+            this.state.hitsText[i].x = iHitsX;
+            this.state.hitsText[i].y = _aPayoutsPosY[i];
+            this.state.hitsText[i].textAlign = "center";
+            this.state.hitsText[i].textBaseline = "middle";  
+            _oPanel.addChild(this.state.hitsText[i]);
             
-            _aPaysText[i] = new createjs.Text("-","36px "+settings.PRIMARY_FONT, "#ffffff");
-            _aPaysText[i].x = iPaysX;
-            _aPaysText[i].y = _aPayoutsPosY[i];
-            _aPaysText[i].textAlign = "center";
-            _aPaysText[i].textBaseline = "middle";  
-            _oPanel.addChild(_aPaysText[i]);
+            this.state.paysText[i] = new createjs.Text("-","36px "+settings.PRIMARY_FONT, "#ffffff");
+            this.state.paysText[i].x = iPaysX;
+            this.state.paysText[i].y = _aPayoutsPosY[i];
+            this.state.paysText[i].textAlign = "center";
+            this.state.paysText[i].textBaseline = "middle";  
+            _oPanel.addChild(this.state.paysText[i]);
         }
         
         _oMoneyText = new createjs.Text(TEXT_CURRENCY +"0","40px "+settings.PRIMARY_FONT, "#ffffff");
@@ -110,31 +114,31 @@ function CPayouts(iX, iY) {
     
     this.updatePayouts = function(iVal) {
         if (iVal < 0) {
-            for (let i=0; i<6; i++) {
-                _aHitsText[i].text = "-";
-                _aPaysText[i].text = "-";
+            for (let i = 0; i < 6; i += 1) {
+                this.state.hitsText[i].text = "-";
+                this.state.paysText[i].text = "-";
             }
             return;
         }
 
-        for(let i=0; i<settings.getPayOuts()[iVal].hits.length; i++) {
-            _aHitsText[i].text = settings.getPayOuts()[iVal].hits[i];
-            _aPaysText[i].text = settings.getPayOuts()[iVal].pays[i];
+        for(let i = 0; i < settings.getPayOuts()[iVal].hits.length; i += 1) {
+            this.state.hitsText[i].text = settings.getPayOuts()[iVal].hits[i];
+            this.state.paysText[i].text = settings.getPayOuts()[iVal].pays[i];
         }
         
-        for(let i=settings.getPayOuts()[iVal].hits.length; i<6; i++) {
-            _aHitsText[i].text = "-";
-            _aPaysText[i].text = "-";
+        for(let i = settings.getPayOuts()[iVal].hits.length; i < 6; i += 1) {
+            this.state.hitsText[i].text = "-";
+            this.state.paysText[i].text = "-";
         }        
     };
     
-    this.showWin = function(szValue) {
+    this.showWin = (szValue) => {
         _oMoneyText.text = TEXT_CURRENCY + szValue;
     };
     
-    this.highlightWin = function(iHits) {
-        for(let i=0; i<6; i++){
-            if(_aHitsText[i].text === iHits) {
+    this.highlightWin = (iHits) => {
+        for(let i = 0; i < 6; i += 1) {
+            if(this.state.hitsText[i].text === iHits) {
                 _iHighlightIndex = i;
                 this._flicker(i);
                 break;
@@ -142,28 +146,27 @@ function CPayouts(iX, iY) {
         }
     };
     
-    this._flicker = function(iIndex) {
+    this._flicker = (iIndex) => {
         if (_iCurAlpha === 1) {
             _iCurAlpha = 0;
-            createjs.Tween.get(_aHitsText[iIndex]).to({alpha:_iCurAlpha }, 250,createjs.Ease.cubicOut);
-            createjs.Tween.get(_aPaysText[iIndex]).to({alpha:_iCurAlpha }, 250,createjs.Ease.cubicOut).call(function(){_oParent._flicker(iIndex);});
+            createjs.Tween.get(this.state.hitsText[iIndex]).to({alpha:_iCurAlpha }, 250,createjs.Ease.cubicOut);
+            createjs.Tween.get(this.state.paysText[iIndex]).to({alpha:_iCurAlpha }, 250,createjs.Ease.cubicOut).call(this, function() {this._flicker(iIndex); });
         } else {
             _iCurAlpha = 1;
-            createjs.Tween.get(_aHitsText[iIndex]).to({alpha:_iCurAlpha }, 250,createjs.Ease.cubicOut);
-            createjs.Tween.get(_aPaysText[iIndex]).to({alpha:_iCurAlpha }, 250,createjs.Ease.cubicOut).call(function(){_oParent._flicker(iIndex);});
+            createjs.Tween.get(this.state.hitsText[iIndex]).to({alpha:_iCurAlpha }, 250,createjs.Ease.cubicOut);
+            createjs.Tween.get(this.state.paysText[iIndex]).to({alpha:_iCurAlpha }, 250,createjs.Ease.cubicOut).call(this, function(){ this._flicker(iIndex); });
         }
     };
     
-    this.stopHighlight = function(){
-        if (_aHitsText[_iHighlightIndex]) {
-            createjs.Tween.removeTweens(_aHitsText[_iHighlightIndex]);
-            createjs.Tween.removeTweens(_aPaysText[_iHighlightIndex]);
-            _aHitsText[_iHighlightIndex].alpha = 1;
-            _aPaysText[_iHighlightIndex].alpha = 1;
+    this.stopHighlight = () => {
+        if (this.state.hitsText[_iHighlightIndex]) {
+            createjs.Tween.removeTweens(this.state.hitsText[_iHighlightIndex]);
+            createjs.Tween.removeTweens(this.state.paysText[_iHighlightIndex]);
+            this.state.hitsText[_iHighlightIndex].alpha = 1;
+            this.state.paysText[_iHighlightIndex].alpha = 1;
         }
     };
     
-    _oParent = this;
     this._init(iX, iY);
 };
 

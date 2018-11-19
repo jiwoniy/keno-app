@@ -32,11 +32,12 @@ const settings = () => {
   // var PAYOUTS = []
   let payOuts = []
 
-  var BANK;
-  var START_PLAYER_MONEY; 
+  // var BANK;
+  let bankMoney = 0;
+  let playerMoney = 0; 
 
   // var BET = [];
-  var BET = [0.10, 0.20, 0.30, 0.50, 1, 2, 3, 5];
+  const BET = [0.10, 0.20, 0.30, 0.50, 1, 2, 3, 5];
 
 
   let ENABLE_FULLSCREEN = true;
@@ -83,9 +84,16 @@ const settings = () => {
       payOuts = payload
     },
     // payOuts,
-    BANK,
-    START_PLAYER_MONEY,
-
+    // BANK,
+    getBankMoney: () => bankMoney,
+    setBankMoney: (money) => {
+      bankMoney = money
+    },
+    // START_PLAYER_MONEY,
+    getPlayerMoney: () => playerMoney,
+    setPlayerMoney: (money) => {
+      playerMoney = money
+    },
     BET,
 
     ENABLE_FULLSCREEN,

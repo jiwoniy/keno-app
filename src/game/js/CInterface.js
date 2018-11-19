@@ -2,7 +2,6 @@ import $ from 'jquery'
 import { Howler } from 'howler';
 
 import screenfull from './screenfull.js'
-
 import {
     s_iOffsetX,
     s_iOffsetY,
@@ -24,16 +23,16 @@ import {
     TEXT_CURRENCY,
 } from './CLang.js'
 
-import {
-    gameInstance
-} from './CGame.js'
+// import {
+//     gameInstance
+// } from './CGame.js'
 import CToggle from './CToggle.js'
 import CGfxButton from './CGfxButton.js'
 import CTextToggle from './CTextToggle.js'
 import CDisplayPanel from './CDisplayPanel.js'
 
 // TODO (jiwoniy)function ===> Class
-function CInterface() {
+function CInterface(gameInstance) {
     var _oAudioToggle;
     var _oButExit;
     var _oButMin;
@@ -51,6 +50,8 @@ function CInterface() {
     var _pStartPosExit;
     var _pStartPosAudio;
     var _pStartPosFullscreen;
+
+    this.gameInstance = gameInstance
     
     this.initInterface = function() {                
         let oExitX;        
@@ -87,7 +88,7 @@ function CInterface() {
         }
         
         const moneyPanelSprite = CSpriteLibrary.getSprite('money_panel');
-        _oMoneyDisplay = new CDisplayPanel(370, settings.CANVAS_HEIGHT - 225, moneyPanelSprite,TEXT_CURRENCY + settings.START_PLAYER_MONEY, settings.PRIMARY_FONT, "#ffffff", 40);
+        _oMoneyDisplay = new CDisplayPanel(370, settings.CANVAS_HEIGHT - 225, moneyPanelSprite,TEXT_CURRENCY + settings.getPlayerMoney(), settings.PRIMARY_FONT, "#ffffff", 40);
 
         const plusDispalySprite = CSpriteLibrary.getSprite('plus_display');
         _oBetDisplay = new CDisplayPanel(480, settings.CANVAS_HEIGHT - 130, plusDispalySprite, '$1', settings.PRIMARY_FONT, '#ffffff', 40, false, mainInstance().getStage());
@@ -142,7 +143,7 @@ function CInterface() {
     };
     
     this.unload = function() {
-        if(settings.DISABLE_SOUND_MOBILE === false || $.browser.mobile === false){
+        if(settings.DISABLE_SOUND_MOBILE === false || $.browser.mobile === false) {
             _oAudioToggle.unload();
             _oAudioToggle = null;
         }
@@ -156,7 +157,7 @@ function CInterface() {
         _oButUndo.unload();
         _oButClear.unload();
         
-        if (_fRequestFullScreen && screenfull.enabled){
+        if (_fRequestFullScreen && screenfull.enabled) {
             _oButFullscreen.unload();
         }
         
@@ -173,8 +174,8 @@ function CInterface() {
         }
     };
 
-    this.refreshBet = function(szValue) {
-        _oBetDisplay.setText(TEXT_CURRENCY + szValue);
+    this.refreshBet = function(betMony) {
+        _oBetDisplay.setText(TEXT_CURRENCY + betMony);
     };
 
     this.refreshMoney = function(szValue) {
@@ -240,27 +241,27 @@ function CInterface() {
     };
 
     this._onClear = function() {
-        gameInstance().clearSelection();
+        gameInstance.clearSelection();
     };
     
     this._onUndo = function() {
-        gameInstance().undoSelection();
+        gameInstance.undoSelection();
     };
     
     this._onButPlusRelease = function() {
-        gameInstance().selectBet("add");
+        gameInstance.selectBet("add");
     };
     
     this._onButMinRelease = function() {
-        gameInstance().selectBet("remove");
+        gameInstance.selectBet("remove");
     };
     
     this._onPlay1 = function() {
-        gameInstance().play();
+        gameInstance.play();
     };
     
     this._onPlay5 = function() {
-        gameInstance().play5();
+        gameInstance.play5();
     };
     
     this._onAudioToggle = function() {
@@ -287,10 +288,10 @@ function CInterface() {
     this._onExit = function() {
         $(mainInstance()).trigger("end_session");
         
-        const iCurPlayerMoney = gameInstance().getCurMoney();
+        const iCurPlayerMoney = gameInstance.getCurMoney();
         $(mainInstance()).trigger("share_event",iCurPlayerMoney);
         
-        gameInstance().onExit();  
+        gameInstance.onExit();  
     };
     
     // s_oInterface = this;
@@ -300,17 +301,17 @@ function CInterface() {
 
 const Singleton = (() => {
     let instance = null;
-    function createInstance() {
-        return new CInterface();
+    function createInstance(gameInstance) {
+        return new CInterface(gameInstance);
     }
   
     return {
-      getInstance: (isConstructor = false) => {
+      getInstance: (isConstructor = false, gameInstance) => {
           // flag === true ===> constructor
         if (isConstructor) {
-          instance = createInstance();
+          instance = createInstance(gameInstance);
         } else if (isConstructor && !instance) {
-            instance = createInstance();
+            instance = createInstance(gameInstance);
         }
         return instance;
       },

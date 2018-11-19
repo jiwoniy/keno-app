@@ -2,8 +2,8 @@ import createjs from './createjs.js'
 import {
     createBitmap
 } from './ctl_utils.js'
-import CSpriteLibrary from './sprite_lib'
 import settings from './settings.js'
+import CSpriteLibrary from './sprite_lib.js'
 import CTextButton from './CTextButton.js'
 import {
     TEXT_PRELOADER_CONTINUE,
